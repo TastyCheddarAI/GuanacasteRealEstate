@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Outlet } from 'react-router-dom'
-import { Search, MapPin, Home, Building, Palmtree, Waves, DollarSign, Bed, Bath, Maximize, Calendar, Heart, Share2, Phone, Mail, MessageSquare, Star, ChevronDown, ChevronRight, Menu, X, Globe, User, Bell, Filter, SlidersHorizontal, Grid3x3, List, Navigation, TrendingUp, Shield, Sparkles, Play, Camera, FileText, Check, Clock, Award, Users, ChevronLeft, ExternalLink } from 'lucide-react'
-import { Button } from '@guanacaste-real/ui'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@guanacaste-real/ui'
-import { changeLanguage, getCurrentLanguage } from '@guanacaste-real/lib'
+import { Search, MapPin, Home, Building, Palmtree, DollarSign, Bed, Bath, Maximize, Calendar, Heart, Share2, Phone, Mail, MessageSquare, Star, ChevronDown, ChevronRight, Menu, X, Globe, User, Bell, Filter, SlidersHorizontal, Grid3x3, List, Navigation, TrendingUp, Shield, Sparkles, Play, Camera, FileText, Check, Clock, Award, Users, ChevronLeft, ExternalLink } from 'lucide-react'
+import { Button } from './ui'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from './ui'
+import { changeLanguage, getCurrentLanguage } from '../lib'
 import { useAuth } from '../contexts/AuthContext'
 import Footer from './Footer'
 import InstallPrompt from './InstallPrompt'
 import AIPropertyAssistant from './AIPropertyAssistant'
+import SEO, { generateOrganizationStructuredData, generateWebsiteStructuredData } from './SEO'
 
 export default function Layout() {
   const [scrollY, setScrollY] = useState(0)
@@ -43,6 +44,14 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Global SEO and Structured Data */}
+      <SEO
+        structuredData={generateOrganizationStructuredData()}
+      />
+      <SEO
+        structuredData={generateWebsiteStructuredData()}
+      />
+
       {/* Main Navigation */}
       <nav className={`sticky top-0 z-50 bg-white transition-all duration-300 ${scrollY > 100 ? 'shadow-lg' : 'shadow-md'}`}>
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,7 +60,7 @@ export default function Layout() {
             <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
               <div className="relative">
                 <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                  <Waves className="w-6 h-6 text-white" />
+                  <Home className="w-6 h-6 text-white" />
                 </div>
                 <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse" />
               </div>
@@ -63,11 +72,11 @@ export default function Layout() {
 
             {/* Desktop Nav */}
             <div className="hidden lg:flex items-center gap-8">
-              <a href="#buy" className="text-slate-700 hover:text-cyan-600 font-semibold transition-colors duration-200">Buy</a>
-              <a href="#sell" className="text-slate-700 hover:text-cyan-600 font-semibold transition-colors duration-200">Sell</a>
-              <a href="#towns" className="text-slate-700 hover:text-cyan-600 font-semibold transition-colors duration-200">Towns</a>
-              <a href="#knowledge" className="text-slate-700 hover:text-cyan-600 font-semibold transition-colors duration-200">Knowledge Base</a>
-              <a href="#pricing" className="text-slate-700 hover:text-cyan-600 font-semibold transition-colors duration-200">Pricing</a>
+              <button onClick={() => navigate('/search')} className="text-slate-700 hover:text-cyan-600 font-semibold transition-colors duration-200">Buy</button>
+              <button onClick={() => navigate('/list')} className="text-slate-700 hover:text-cyan-600 font-semibold transition-colors duration-200">Sell</button>
+              <button onClick={() => navigate('/explore')} className="text-slate-700 hover:text-cyan-600 font-semibold transition-colors duration-200">Towns</button>
+              <button onClick={() => navigate('/knowledge-base')} className="text-slate-700 hover:text-cyan-600 font-semibold transition-colors duration-200">Knowledge Base</button>
+              <button onClick={() => navigate('/resources')} className="text-slate-700 hover:text-cyan-600 font-semibold transition-colors duration-200">Pricing</button>
 
               <div className="flex items-center gap-3 ml-4 pl-4 border-l border-slate-200">
                 <DropdownMenu>
@@ -137,11 +146,11 @@ export default function Layout() {
         {menuOpen && (
           <div className="lg:hidden bg-white border-t border-slate-200 shadow-xl">
             <div className="px-4 py-6 space-y-4">
-              <a href="#buy" className="block text-lg font-semibold text-slate-700 hover:text-cyan-600 transition-colors">Buy</a>
-              <a href="#sell" className="block text-lg font-semibold text-slate-700 hover:text-cyan-600 transition-colors">Sell</a>
-              <a href="#towns" className="block text-lg font-semibold text-slate-700 hover:text-cyan-600 transition-colors">Towns</a>
-              <a href="#knowledge" className="block text-lg font-semibold text-slate-700 hover:text-cyan-600 transition-colors">Knowledge Base</a>
-              <a href="#pricing" className="block text-lg font-semibold text-slate-700 hover:text-cyan-600 transition-colors">Pricing</a>
+              <button onClick={() => { navigate('/search'); setMenuOpen(false); }} className="block text-lg font-semibold text-slate-700 hover:text-cyan-600 transition-colors text-left">Buy</button>
+              <button onClick={() => { navigate('/list'); setMenuOpen(false); }} className="block text-lg font-semibold text-slate-700 hover:text-cyan-600 transition-colors text-left">Sell</button>
+              <button onClick={() => { navigate('/explore'); setMenuOpen(false); }} className="block text-lg font-semibold text-slate-700 hover:text-cyan-600 transition-colors text-left">Towns</button>
+              <button onClick={() => { navigate('/knowledge-base'); setMenuOpen(false); }} className="block text-lg font-semibold text-slate-700 hover:text-cyan-600 transition-colors text-left">Knowledge Base</button>
+              <button onClick={() => { navigate('/resources'); setMenuOpen(false); }} className="block text-lg font-semibold text-slate-700 hover:text-cyan-600 transition-colors text-left">Pricing</button>
               <div className="space-y-2">
                 <div className="text-sm font-semibold text-slate-700 mb-2">Language</div>
                 <div className="flex gap-2">

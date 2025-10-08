@@ -1,0 +1,12 @@
+{
+  "email": "admin@example.com",
+  "title": "Publish: Nicoya Coastal Update v2",
+  "description": "Motion to publish updated Nicoya coastal zoning and re-embed.",
+  "payload": {
+    "action": "publish_doc",
+    "kb_doc_id": "REPLACE-KB-ID",
+    "version": 2
+  },
+  "quorum": 5,
+  "pass_ratio": 0.66
+}

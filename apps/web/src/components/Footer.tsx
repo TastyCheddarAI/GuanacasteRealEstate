@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Users, Mail, Phone, Waves } from 'lucide-react'
+import { Users, Mail, Phone, Home } from 'lucide-react'
 
 export default function Footer() {
   const navigate = useNavigate()
@@ -7,11 +7,11 @@ export default function Footer() {
   return (
     <footer className="bg-slate-900 text-slate-300 pt-16 pb-8 border-t border-slate-800">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center">
-                <Waves className="w-6 h-6 text-white" />
+                <Home className="w-6 h-6 text-white" />
               </div>
               <div>
                 <div className="text-xl font-bold text-white">Guanacaste Real</div>
@@ -64,6 +64,18 @@ export default function Footer() {
               <li><button onClick={() => navigate('/title-types')} className="hover:text-white transition-colors text-left">Title Types</button></li>
               <li><button onClick={() => navigate('/due-diligence')} className="hover:text-white transition-colors text-left">Due Diligence</button></li>
               <li><button onClick={() => navigate('/blog')} className="hover:text-white transition-colors text-left">Blog</button></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-bold text-white mb-4">Featured Towns</h4>
+            <ul className="space-y-2 text-sm">
+              <li><button onClick={() => navigate('/tamarindo')} className="hover:text-white transition-colors text-left">Tamarindo</button></li>
+              <li><button onClick={() => navigate('/nosara')} className="hover:text-white transition-colors text-left">Nosara</button></li>
+              <li><button onClick={() => navigate('/flamingo')} className="hover:text-white transition-colors text-left">Flamingo</button></li>
+              <li><button onClick={() => navigate('/playa-grande')} className="hover:text-white transition-colors text-left">Playa Grande</button></li>
+              <li><button onClick={() => navigate('/samara')} className="hover:text-white transition-colors text-left">Samara</button></li>
+              <li><button onClick={() => navigate('/explore')} className="hover:text-white transition-colors text-left">All Towns</button></li>
             </ul>
           </div>
         </div>

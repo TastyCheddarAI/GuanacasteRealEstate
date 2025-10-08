@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Card, CardContent, CardHeader, CardTitle } from '@guanacaste-real/ui'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui'
 import { useAuth } from '../contexts/AuthContext'
 
 export default function Auth() {

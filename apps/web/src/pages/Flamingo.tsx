@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Waves, Sun, Cloud, CloudRain, Wind, DollarSign, Home, Car, Users, Star, ChevronRight, ChevronLeft, Heart, Share2, MessageSquare, Calendar, Clock, Phone, Mail, ExternalLink, Navigation, Camera, Info, TrendingUp, Shield, Zap, Wifi, Droplets, Mountain, TreePine, Fish, Anchor, Utensils, ShoppingBag, Music, Camera as CameraIcon, Map, Thermometer, Eye, Award, Ship, Crown, Gem } from 'lucide-react';
+import { MapPin, Waves, Sun, Cloud, CloudRain, Wind, DollarSign, Home, Car, Users, Star, ChevronRight, ChevronLeft, Heart, Share2, MessageSquare, Calendar, Clock, Phone, Mail, ExternalLink, Navigation, Camera, Info, TrendingUp, Shield, Zap, Wifi, Droplets, Mountain, TreePine, Fish, Anchor, Utensils, ShoppingBag, Music, Camera as CameraIcon, Map, Thermometer, Eye, Award, Ship, Crown, Gem, Loader2 } from 'lucide-react';
+import { useWeather } from '../services/weather';
 
 const Flamingo = () => {
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedPropertyType, setSelectedPropertyType] = useState('all');
+
+  // Fetch real weather data for Flamingo
+  const { weatherData, loading: weatherLoading, error: weatherError } = useWeather('flamingo');
 
   const heroImages = [
     'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200',
@@ -56,16 +60,6 @@ const Flamingo = () => {
     }
   ];
 
-  const weatherData = {
-    current: { temp: 29, condition: 'Sunny', humidity: 70, wind: 15 },
-    forecast: [
-      { day: 'Today', high: 31, low: 25, condition: 'Sunny', icon: Sun },
-      { day: 'Tomorrow', high: 30, low: 24, condition: 'Sunny', icon: Sun },
-      { day: 'Wednesday', high: 29, low: 23, condition: 'Partly Cloudy', icon: Cloud },
-      { day: 'Thursday', high: 32, low: 26, condition: 'Sunny', icon: Sun },
-      { day: 'Friday', high: 31, low: 25, condition: 'Sunny', icon: Sun }
-    ]
-  };
 
   const localAmenities = {
     marinas: [
@@ -372,21 +366,36 @@ const Flamingo = () => {
                     <Sun className="w-5 h-5 text-yellow-600" />
                     Current Weather & Forecast
                   </h3>
-                  <div className="grid md:grid-cols-6 gap-4">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-slate-900 mb-1">{weatherData.current.temp}°C</div>
-                      <Sun className="w-8 h-8 text-yellow-600 mx-auto mb-1" />
-                      <div className="text-sm text-slate-600">{weatherData.current.condition}</div>
+                  {weatherLoading ? (
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="w-6 h-6 animate-spin text-amber-600 mr-2" />
+                      <span className="text-slate-600">Loading weather data...</span>
                     </div>
-                    {weatherData.forecast.map((day, index) => (
-                      <div key={index} className="text-center">
-                        <div className="font-semibold text-slate-900 mb-1">{day.day}</div>
-                        <day.icon className="w-6 h-6 text-slate-600 mx-auto mb-1" />
-                        <div className="text-sm text-slate-900">{day.high}°/{day.low}°</div>
-                        <div className="text-xs text-slate-600">{day.condition}</div>
+                  ) : weatherError ? (
+                    <div className="text-center py-8">
+                      <p className="text-slate-600 mb-2">Weather data temporarily unavailable</p>
+                      <p className="text-sm text-slate-500">Showing estimated conditions</p>
+                    </div>
+                  ) : weatherData ? (
+                    <div className="grid md:grid-cols-6 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-slate-900 mb-1">{weatherData.current.temp}°C</div>
+                        <weatherData.current.icon className="w-8 h-8 text-slate-600 mx-auto mb-1" />
+                        <div className="text-sm text-slate-600">{weatherData.current.condition}</div>
+                        <div className="text-xs text-slate-500 mt-1">
+                          Humidity: {weatherData.current.humidity}% • Wind: {weatherData.current.windSpeed} km/h
+                        </div>
                       </div>
-                    ))}
-                  </div>
+                      {weatherData.forecast.map((day, index) => (
+                        <div key={index} className="text-center">
+                          <div className="font-semibold text-slate-900 mb-1">{day.day}</div>
+                          <day.icon className="w-6 h-6 text-slate-600 mx-auto mb-1" />
+                          <div className="text-sm text-slate-900">{day.high}°/{day.low}°</div>
+                          <div className="text-xs text-slate-600">{day.condition}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
 
                 {/* Interactive Map Placeholder */}

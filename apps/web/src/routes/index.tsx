@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Home, Building, Palmtree, Waves, DollarSign, Bed, Bath, Maximize, Calendar, Heart, Share2, Phone, Mail, MessageSquare, Star, ChevronDown, ChevronRight, Menu, X, Globe, User, Bell, Filter, SlidersHorizontal, Grid3x3, List, Navigation, TrendingUp, Shield, Sparkles, Play, Camera, FileText, Check, Clock, Award, Users, ChevronLeft, ExternalLink } from 'lucide-react';
-import { Button } from '@guanacaste-real/ui';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@guanacaste-real/ui';
-import { changeLanguage, getCurrentLanguage } from '@guanacaste-real/lib';
+import { Button } from '../components/ui';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../components/ui';
+import { changeLanguage, getCurrentLanguage } from '../lib';
 import { useAuth } from '../contexts/AuthContext';
 
 const GuanacasteRealEstate = () => {

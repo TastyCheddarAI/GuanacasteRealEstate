@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FileText, Waves, Shield, AlertTriangle, CheckCircle, XCircle, ChevronRight, Sparkles, MessageSquare, ArrowRight, Info } from 'lucide-react';
-import { Button } from '@guanacaste-real/ui';
+import { Button } from '../components/ui';
 
 const TitleTypes = () => {
   const [selectedComparison, setSelectedComparison] = useState<'overview' | 'ownership' | 'transfer' | 'restrictions'>('overview');

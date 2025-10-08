@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, MapPin, Home, Building, DollarSign, Bed, Bath, Maximize, Heart, Share2, MessageSquare, Filter, SlidersHorizontal, Grid3x3, List, Navigation, SortAsc, ChevronDown, X, Check, Loader2 } from 'lucide-react';
 import AIPropertyAssistant from '../components/AIPropertyAssistant';
+import SEO from '../components/SEO';
 import { searchAPI } from '../services/api';
 
 const SearchResults = () => {
@@ -119,6 +120,7 @@ const SearchResults = () => {
             src={property.image}
             alt={property.title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            loading="lazy"
           />
 
           {/* Overlay Gradient */}
@@ -298,6 +300,56 @@ const SearchResults = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      {/* SEO for Search Results */}
+      <SEO
+        title={`${searchQuery ? `"${searchQuery}"` : 'Property Search'} - ${totalResults} Results | Guanacaste Real Estate`}
+        description={`Find ${totalResults} properties${searchQuery ? ` matching "${searchQuery}"` : ''} in Guanacaste, Costa Rica. Browse homes, condos, and land for sale with detailed listings and virtual tours.`}
+        keywords={[
+          searchQuery,
+          'Guanacaste real estate',
+          'Costa Rica properties',
+          'property search',
+          activeFilters.propertyType !== 'all' ? `${activeFilters.propertyType} for sale` : '',
+          activeFilters.beds ? `${activeFilters.beds} bedroom` : '',
+          activeFilters.baths ? `${activeFilters.baths} bathroom` : '',
+          ...activeFilters.features
+        ].filter(Boolean)}
+        url={`/search${searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : ''}`}
+        type="website"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "SearchResultsPage",
+          "name": `Property Search Results${searchQuery ? ` for "${searchQuery}"` : ''}`,
+          "description": `Search results for properties in Guanacaste${searchQuery ? ` matching "${searchQuery}"` : ''}`,
+          "url": `https://guanacaste-real.com/search${searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : ''}`,
+          "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": totalResults,
+            "itemListElement": searchResults.slice(0, 10).map((property, index) => ({
+              "@type": "ListItem",
+              "position": index + 1,
+              "item": {
+                "@type": "RealEstateListing",
+                "name": property.title,
+                "url": `https://guanacaste-real.com/property/${property.id}`,
+                "image": property.image,
+                "offers": {
+                  "@type": "Offer",
+                  "price": property.price,
+                  "priceCurrency": "USD"
+                },
+                "address": {
+                  "@type": "PostalAddress",
+                  "addressLocality": property.location.split(',')[0],
+                  "addressRegion": "Guanacaste",
+                  "addressCountry": "CR"
+                }
+              }
+            }))
+          }
+        }}
+      />
+
       {/* Search Header */}
       <div className="bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">

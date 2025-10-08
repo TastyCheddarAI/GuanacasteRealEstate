@@ -1,0 +1,6 @@
+{
+  "reviewer_email": "curator@example.com",
+  "decision": "reject",
+  "queue_id": "REPLACE-QUEUE-ID",
+  "notes": "Missing water letter guidance and map reference."
+}

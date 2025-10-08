@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@guanacaste-real/ui'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui'
 
 export default function Explore() {
   return (

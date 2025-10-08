@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { MapPin, Bed, Bath, Maximize, Calendar, Heart, Share2, Phone, Mail, MessageSquare, Star, ChevronLeft, ChevronRight, Camera, Shield, Check, Clock, Award, Users, ExternalLink, Zap, Waves, Home, Car, Wifi, Mountain, Eye, DollarSign, Ruler, Compass, Loader2 } from 'lucide-react';
 import AIPropertyAssistant from '../components/AIPropertyAssistant';
+import SEO, { generatePropertyStructuredData } from '../components/SEO';
 import { propertiesAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -151,12 +152,24 @@ const PropertyDetail = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      {/* SEO and Structured Data */}
+      <SEO
+        title={`${property.title} - ${property.location}`}
+        description={`Beautiful ${property.beds} bedroom, ${property.baths} bathroom property in ${property.location}. ${property.sqft.toLocaleString()} sq ft, ${property.lot.toLocaleString()} m² lot. Listed for $${property.price.toLocaleString()} USD.`}
+        keywords={[property.location.split(',')[0], 'real estate', 'property', 'Guanacaste', 'Costa Rica', `${property.beds} bedroom`, `${property.baths} bathroom`]}
+        image={property.images[0]}
+        url={`/property/${property.id}`}
+        type="product"
+        structuredData={generatePropertyStructuredData(property)}
+      />
+
       {/* Image Gallery */}
       <div className="relative h-96 md:h-[600px] bg-slate-200">
         <img
           src={property.images[currentImageIndex]}
           alt={property.title}
           className="w-full h-full object-cover"
+          loading="lazy"
         />
 
         {/* Navigation Arrows */}
@@ -189,7 +202,7 @@ const PropertyDetail = () => {
                 index === currentImageIndex ? 'border-cyan-500' : 'border-white/50'
               }`}
             >
-              <img src={img} alt="" className="w-full h-full object-cover" />
+              <img src={img} alt="" className="w-full h-full object-cover" loading="lazy" />
             </button>
           ))}
           {property.images.length > 5 && (
@@ -460,7 +473,7 @@ const PropertyDetail = () => {
                 {similarProperties.map((similar) => (
                   <div key={similar.id} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer">
                     <div className="h-48 bg-slate-200">
-                      <img src={similar.image} alt={similar.title} className="w-full h-full object-cover" />
+                      <img src={similar.image} alt={similar.title} className="w-full h-full object-cover" loading="lazy" />
                     </div>
                     <div className="p-4">
                       <div className="text-lg font-bold text-slate-900 mb-1">${similar.price.toLocaleString()}</div>

@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Waves, Sun, Cloud, CloudRain, Wind, DollarSign, Home, Car, Users, Star, ChevronRight, ChevronLeft, Heart, Share2, MessageSquare, Calendar, Clock, Phone, Mail, ExternalLink, Navigation, Camera, Info, TrendingUp, Shield, Zap, Wifi, Droplets, Mountain, TreePine, Fish, Anchor, Utensils, ShoppingBag, Music, Camera as CameraIcon, Map, Thermometer, Eye, Award } from 'lucide-react';
+import { MapPin, Waves, Sun, Cloud, CloudRain, Wind, DollarSign, Home, Car, Users, Star, ChevronRight, ChevronLeft, Heart, Share2, MessageSquare, Calendar, Clock, Phone, Mail, ExternalLink, Navigation, Camera, Info, TrendingUp, Shield, Zap, Wifi, Droplets, Mountain, TreePine, Fish, Anchor, Utensils, ShoppingBag, Music, Camera as CameraIcon, Map, Thermometer, Eye, Award, Loader2 } from 'lucide-react';
+import { useWeather } from '../services/weather';
+import SEO from '../components/SEO';
 
 const Tamarindo = () => {
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedPropertyType, setSelectedPropertyType] = useState('all');
+
+  // Fetch real weather data for Tamarindo
+  const { weatherData, loading: weatherLoading, error: weatherError } = useWeather('tamarindo');
 
   const heroImages = [
     'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200',
@@ -56,16 +61,6 @@ const Tamarindo = () => {
     }
   ];
 
-  const weatherData = {
-    current: { temp: 28, condition: 'Sunny', humidity: 75, wind: 12 },
-    forecast: [
-      { day: 'Today', high: 30, low: 24, condition: 'Sunny', icon: Sun },
-      { day: 'Tomorrow', high: 29, low: 23, condition: 'Partly Cloudy', icon: Cloud },
-      { day: 'Wednesday', high: 28, low: 22, condition: 'Light Rain', icon: CloudRain },
-      { day: 'Thursday', high: 31, low: 25, condition: 'Sunny', icon: Sun },
-      { day: 'Friday', high: 30, low: 24, condition: 'Sunny', icon: Sun }
-    ]
-  };
 
   const localAmenities = {
     beaches: [
@@ -126,6 +121,7 @@ const Tamarindo = () => {
             src={property.image}
             alt={property.title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="absolute top-4 left-4 flex flex-wrap gap-2">
@@ -219,6 +215,58 @@ const Tamarindo = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      {/* SEO Optimization for Tamarindo Real Estate */}
+      <SEO
+        title="Tamarindo Real Estate - Luxury Homes & Beachfront Properties in Costa Rica's Surf Paradise"
+        description="Discover Tamarindo real estate with luxury homes, beachfront villas, and investment properties. Browse 67+ active listings with average prices of $850,000. Costa Rica's premier surf destination with world-class amenities."
+        keywords={['Tamarindo real estate', 'Tamarindo properties', 'Costa Rica beachfront homes', 'Tamarindo luxury villas', 'Guanacaste real estate', 'Tamarindo investment properties', 'surf town real estate']}
+        image={heroImages[0]}
+        url="/tamarindo"
+        type="website"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Place",
+          "name": "Tamarindo",
+          "description": "Costa Rica's premier surf destination and real estate market in Guanacaste",
+          "address": {
+            "@type": "PostalAddress",
+            "addressRegion": "Guanacaste",
+            "addressCountry": "CR"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 10.2969,
+            "longitude": -85.8411
+          },
+          "hasPart": {
+            "@type": "RealEstateListing",
+            "name": "Tamarindo Real Estate Market",
+            "description": "Active real estate listings in Tamarindo, Costa Rica",
+            "numberOfItems": marketStats.inventory,
+            "offers": {
+              "@type": "AggregateOffer",
+              "priceCurrency": "USD",
+              "lowPrice": 200000,
+              "highPrice": 2000000,
+              "offerCount": marketStats.inventory
+            }
+          },
+          "touristType": ["Beach", "Surfing", "Luxury Travel", "Real Estate Investment"],
+          "containsPlace": [
+            {
+              "@type": "Beach",
+              "name": "Tamarindo Beach",
+              "description": "World-famous surfing beach with consistent waves"
+            },
+            {
+              "@type": "Restaurant",
+              "name": "Tamarindo Dining Scene",
+              "description": "Diverse culinary offerings from fresh seafood to international cuisine"
+            }
+          ]
+        }}
+      />
+
       {/* Hero Section with Image Carousel */}
       <div className="relative h-96 md:h-[600px] bg-slate-200">
         <img
@@ -372,21 +420,36 @@ const Tamarindo = () => {
                     <Sun className="w-5 h-5 text-yellow-600" />
                     Current Weather & Forecast
                   </h3>
-                  <div className="grid md:grid-cols-6 gap-4">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-slate-900 mb-1">{weatherData.current.temp}°C</div>
-                      <Sun className="w-8 h-8 text-yellow-600 mx-auto mb-1" />
-                      <div className="text-sm text-slate-600">{weatherData.current.condition}</div>
+                  {weatherLoading ? (
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="w-6 h-6 animate-spin text-cyan-600 mr-2" />
+                      <span className="text-slate-600">Loading weather data...</span>
                     </div>
-                    {weatherData.forecast.map((day, index) => (
-                      <div key={index} className="text-center">
-                        <div className="font-semibold text-slate-900 mb-1">{day.day}</div>
-                        <day.icon className="w-6 h-6 text-slate-600 mx-auto mb-1" />
-                        <div className="text-sm text-slate-900">{day.high}°/{day.low}°</div>
-                        <div className="text-xs text-slate-600">{day.condition}</div>
+                  ) : weatherError ? (
+                    <div className="text-center py-8">
+                      <p className="text-slate-600 mb-2">Weather data temporarily unavailable</p>
+                      <p className="text-sm text-slate-500">Showing estimated conditions</p>
+                    </div>
+                  ) : weatherData ? (
+                    <div className="grid md:grid-cols-6 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-slate-900 mb-1">{weatherData.current.temp}°C</div>
+                        <weatherData.current.icon className="w-8 h-8 text-slate-600 mx-auto mb-1" />
+                        <div className="text-sm text-slate-600">{weatherData.current.condition}</div>
+                        <div className="text-xs text-slate-500 mt-1">
+                          Humidity: {weatherData.current.humidity}% • Wind: {weatherData.current.windSpeed} km/h
+                        </div>
                       </div>
-                    ))}
-                  </div>
+                      {weatherData.forecast.map((day, index) => (
+                        <div key={index} className="text-center">
+                          <div className="font-semibold text-slate-900 mb-1">{day.day}</div>
+                          <day.icon className="w-6 h-6 text-slate-600 mx-auto mb-1" />
+                          <div className="text-sm text-slate-900">{day.high}°/{day.low}°</div>
+                          <div className="text-xs text-slate-600">{day.condition}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
 
                 {/* Interactive Map Placeholder */}

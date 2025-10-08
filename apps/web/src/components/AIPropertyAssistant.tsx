@@ -62,7 +62,7 @@ interface Message {
   content: string;
   timestamp: Date;
   metadata?: {
-    type?: 'property_analysis' | 'market_data' | 'legal_advice' | 'negotiation' | 'document_analysis' | 'image_analysis' | 'ai_response' | 'error';
+    type?: 'property_analysis' | 'market_data' | 'legal_advice' | 'negotiation' | 'document_analysis' | 'image_analysis' | 'ai_response' | 'error' | 'general_response' | 'school_info' | 'school_overview' | 'location_info' | 'location_unknown' | 'property_recommendations' | 'legal_info';
     data?: any;
     actions?: Array<{
       label: string;
@@ -458,7 +458,7 @@ const AIPropertyAssistant: React.FC<{
     }
 
     // Extract location preferences
-    const locations = ['tamarindo', 'nosara', 'playa grande', 'flamingo', 'potrero', 'sámara', 'samara', 'liberia', 'guanacaste'];
+    const locations = ['tamarindo', 'nosara', 'playa grande', 'flamingo', 'potrero', 'sámara', 'samara', 'liberia', 'guanacaste', 'playa negra'];
     for (const loc of locations) {
       if (lowerMessage.includes(loc)) {
         requirements.location = loc;
@@ -484,7 +484,7 @@ const AIPropertyAssistant: React.FC<{
     return requirements;
   };
 
-  // Generate AI response using the Edge Function
+  // Generate AI response using the Edge Function with fallback to local knowledge base
   const generateResponse = async (userMessage: string): Promise<Message> => {
     try {
       const response = await aiAPI.ask(userMessage, propertyId);
@@ -508,20 +508,256 @@ const AIPropertyAssistant: React.FC<{
       };
     } catch (error) {
       console.error('AI API error:', error);
+      // Fallback to local knowledge base
+      return await generateLocalResponse(userMessage);
+    }
+  };
+
+  // Generate response using local knowledge base
+  const generateLocalResponse = async (userMessage: string): Promise<Message> => {
+    const lowerMessage = userMessage.toLowerCase();
+    const requirements = parseUserQuery(userMessage);
+
+    // Handle legal queries first (more specific)
+    if (lowerMessage.includes('legal') || lowerMessage.includes('law') || lowerMessage.includes('title') || lowerMessage.includes('contrato') ||
+        lowerMessage.includes('legal') || lowerMessage.includes('ley') || lowerMessage.includes('título') ||
+        lowerMessage.includes('tax') || lowerMessage.includes('transfer') || lowerMessage.includes('impuesto') || lowerMessage.includes('transferencia') ||
+        (lowerMessage.includes('real estate') && lowerMessage.includes('law')) ||
+        (lowerMessage.includes('costa rica') && lowerMessage.includes('law'))) {
+      return generateLegalResponse();
+    }
+
+    // Handle school-related queries
+    if (lowerMessage.includes('school') || lowerMessage.includes('escuela') || lowerMessage.includes('education') || lowerMessage.includes('educación')) {
+      return generateSchoolResponse(requirements);
+    }
+
+    // Handle location-specific queries
+    if (requirements.location) {
+      return generateLocationResponse(requirements);
+    }
+
+    // Handle general property queries
+    if (lowerMessage.includes('property') || lowerMessage.includes('house') || lowerMessage.includes('home') || lowerMessage.includes('real estate') ||
+        lowerMessage.includes('propiedad') || lowerMessage.includes('casa') || lowerMessage.includes('inmueble')) {
+      return generatePropertyResponse(requirements);
+    }
+
+    // Handle market queries
+    if (lowerMessage.includes('market') || lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('value') ||
+        lowerMessage.includes('mercado') || lowerMessage.includes('precio') || lowerMessage.includes('valor')) {
+      return generateMarketResponse();
+    }
+
+    // Default contextual response
+    return {
+      id: Date.now().toString(),
+      type: 'assistant',
+      content: getContextualResponse(userMessage, context),
+      timestamp: new Date(),
+      metadata: {
+        type: 'general_response',
+        actions: [
+          { label: t('Learn about areas', 'Conocer zonas'), action: 'market_info' },
+          { label: t('School information', 'Información escolar'), action: 'school_info' },
+          { label: t('Legal guide', 'Guía legal'), action: 'legal_help' }
+        ]
+      }
+    };
+  };
+
+  // Generate school-specific response
+  const generateSchoolResponse = (requirements: any): Message => {
+    let location = requirements.location;
+    let areaData = null;
+
+    // Map playa negra to nearby areas
+    if (location === 'playa negra') {
+      location = 'tamarindo'; // Playa Negra is near Tamarindo
+    }
+
+    // Find area data
+    if (location && guanacasteKnowledge.areas[location as keyof typeof guanacasteKnowledge.areas]) {
+      areaData = guanacasteKnowledge.areas[location as keyof typeof guanacasteKnowledge.areas];
+    }
+
+    if (areaData) {
+      const schools = areaData.schools;
+      const schoolList = schools.map((school: any) =>
+        `• **${school.name}** (${school.type}, ${school.language})\n  Rating: ${school.rating}/10 - ${school.description}`
+      ).join('\n\n');
+
       return {
         id: Date.now().toString(),
         type: 'assistant',
-        content: 'I apologize, but I\'m having trouble connecting to my knowledge base right now. Please try again in a moment.',
+        content: t(
+          `Here are the best schools in the ${areaData.name} area:\n\n${schoolList}\n\n**Community Notes:**\n• Expat Population: ${areaData.community.expatPopulation}\n• Family Friendly Rating: ${areaData.community.familyFriendly}/10\n• Safety Rating: ${areaData.community.safety}/10\n\nWould you like me to recommend specific areas based on your family needs, or provide more details about any of these schools?`,
+          `Aquí están las mejores escuelas en la zona de ${areaData.name}:\n\n${schoolList}\n\n**Notas de Comunidad:**\n• Población Expatriada: ${areaData.community.expatPopulation}\n• Amigable para Familias: ${areaData.community.familyFriendly}/10\n• Seguridad: ${areaData.community.safety}/10\n\n¿Te gustaría que recomiende zonas específicas según las necesidades de tu familia, o dar más detalles sobre alguna de estas escuelas?`
+        ),
         timestamp: new Date(),
         metadata: {
-          type: 'error',
+          type: 'school_info',
+          data: {
+            location: areaData.name,
+            schools: schools,
+            community: areaData.community
+          },
           actions: [
-            { label: 'Try again', action: 'retry' },
-            { label: 'Contact support', action: 'contact_support' }
+            { label: t('Compare areas', 'Comparar zonas'), action: 'compare_areas' },
+            { label: t('Family recommendations', 'Recomendaciones familiares'), action: 'family_recommendations' },
+            { label: t('More details', 'Más detalles'), action: 'school_details' }
           ]
         }
       };
     }
+
+    // General school response if no specific location
+    return {
+      id: Date.now().toString(),
+      type: 'assistant',
+      content: t(
+        `Costa Rica offers excellent educational options in Guanacaste. Here are some of the top-rated areas for families with children:\n\n🏆 **Nosara** - Outstanding international schools, peaceful environment\n🏆 **Playa Grande** - Premium education with strong expat community\n🏆 **Playa Flamingo** - Highly rated bilingual schools\n\nEach area has unique strengths. What are your priorities: international curriculum, Spanish immersion, or specific grade levels?`,
+        `Costa Rica ofrece excelentes opciones educativas en Guanacaste. Aquí están algunas de las zonas mejor calificadas para familias con niños:\n\n🏆 **Nosara** - Escuelas internacionales excepcionales, ambiente tranquilo\n🏆 **Playa Grande** - Educación premium con fuerte comunidad expatriada\n🏆 **Playa Flamingo** - Escuelas bilingües altamente calificadas\n\nCada zona tiene fortalezas únicas. ¿Cuáles son tus prioridades: currículo internacional, inmersión en español, o niveles escolares específicos?`
+      ),
+      timestamp: new Date(),
+      metadata: {
+        type: 'school_overview',
+        actions: [
+          { label: t('Nosara schools', 'Escuelas Nosara'), action: 'nosara_schools' },
+          { label: t('Playa Grande schools', 'Escuelas Playa Grande'), action: 'playa_grande_schools' },
+          { label: t('Compare all', 'Comparar todas'), action: 'compare_all_schools' }
+        ]
+      }
+    };
+  };
+
+  // Generate location-specific response
+  const generateLocationResponse = (requirements: any): Message => {
+    let location = requirements.location;
+
+    // Map playa negra to nearby areas
+    if (location === 'playa negra') {
+      location = 'tamarindo';
+    }
+
+    const areaData = guanacasteKnowledge.areas[location as keyof typeof guanacasteKnowledge.areas];
+    if (areaData) {
+      return {
+        id: Date.now().toString(),
+        type: 'assistant',
+        content: t(
+          `**${areaData.name} Overview:**\n\n🏖️ **Lifestyle:** ${areaData.lifestyle.atmosphere}\n📚 **Education:** ${areaData.schools.length} excellent schools available\n👥 **Community:** ${areaData.community.expatPopulation} expat population\n💰 **Real Estate:** ${areaData.realEstate.priceRange} average\n\n**Key Features:**\n${areaData.lifestyle.activities.map((activity: string) => `• ${activity}`).join('\n')}\n\nWould you like detailed information about schools, properties, or community life in ${areaData.name}?`,
+          `**Resumen de ${areaData.name}:**\n\n🏖️ **Estilo de Vida:** ${areaData.lifestyle.atmosphere}\n📚 **Educación:** ${areaData.schools.length} excelentes escuelas disponibles\n👥 **Comunidad:** Población expatriada ${areaData.community.expatPopulation}\n💰 **Bienes Raíces:** ${areaData.realEstate.priceRange} promedio\n\n**Características Principales:**\n${areaData.lifestyle.activities.map((activity: string) => `• ${activity}`).join('\n')}\n\n¿Te gustaría información detallada sobre escuelas, propiedades, o vida comunitaria en ${areaData.name}?`
+        ),
+        timestamp: new Date(),
+        metadata: {
+          type: 'location_info',
+          data: areaData,
+          actions: [
+            { label: t('School details', 'Detalles escolares'), action: 'school_details' },
+            { label: t('Property options', 'Opciones de propiedad'), action: 'property_options' },
+            { label: t('Compare areas', 'Comparar zonas'), action: 'compare_areas' }
+          ]
+        }
+      };
+    }
+
+    return {
+      id: Date.now().toString(),
+      type: 'assistant',
+      content: t(
+        `I don't have specific information about ${requirements.location}, but Guanacaste offers many wonderful areas. Would you like me to tell you about the main family-friendly areas like Nosara, Playa Grande, or Tamarindo?`,
+        `No tengo información específica sobre ${requirements.location}, pero Guanacaste ofrece muchas zonas maravillosas. ¿Te gustaría que te hable sobre las principales zonas amigables para familias como Nosara, Playa Grande, o Tamarindo?`
+      ),
+      timestamp: new Date(),
+      metadata: {
+        type: 'location_unknown',
+        actions: [
+          { label: t('Show top areas', 'Mostrar mejores zonas'), action: 'top_areas' },
+          { label: t('Family recommendations', 'Recomendaciones familiares'), action: 'family_recommendations' }
+        ]
+      }
+    };
+  };
+
+  // Generate property-related response
+  const generatePropertyResponse = (requirements: any): Message => {
+    let recommendations = [];
+
+    if (requirements.privateSchools || requirements.expatCommunity || requirements.children) {
+      recommendations = ['nosara', 'playa grande'];
+    } else if (requirements.budget && requirements.budget.max < 1000000) {
+      recommendations = ['samara', 'tamarindo'];
+    } else {
+      recommendations = ['playa grande', 'playa flamingo'];
+    }
+
+    const area1 = guanacasteKnowledge.areas[recommendations[0] as keyof typeof guanacasteKnowledge.areas];
+    const area2 = guanacasteKnowledge.areas[recommendations[1] as keyof typeof guanacasteKnowledge.areas];
+
+    return {
+      id: Date.now().toString(),
+      type: 'assistant',
+      content: t(
+        `Based on your requirements, I recommend these areas:\n\n🏠 **${area1.name}:** ${area1.realEstate.priceRange}, ${area1.schools.length} excellent schools\n🏠 **${area2.name}:** ${area2.realEstate.priceRange}, ${area2.schools.length} excellent schools\n\nBoth offer beautiful properties and family-friendly communities. Would you like me to show you specific property listings or provide more details about either area?`,
+        `Basándome en tus requisitos, recomiendo estas zonas:\n\n🏠 **${area1.name}:** ${area1.realEstate.priceRange}, ${area1.schools.length} excelentes escuelas\n🏠 **${area2.name}:** ${area2.realEstate.priceRange}, ${area2.schools.length} excelentes escuelas\n\nAmbas ofrecen propiedades hermosas y comunidades amigables para familias. ¿Te gustaría que te muestre listados específicos de propiedades o dar más detalles sobre alguna zona?`
+      ),
+      timestamp: new Date(),
+      metadata: {
+        type: 'property_recommendations',
+        data: {
+          recommendedAreas: [area1.name, area2.name]
+        },
+        actions: [
+          { label: t('View properties', 'Ver propiedades'), action: 'view_properties' },
+          { label: t('Area details', 'Detalles de zona'), action: 'area_details' },
+          { label: t('Investment analysis', 'Análisis de inversión'), action: 'investment_analysis' }
+        ]
+      }
+    };
+  };
+
+  // Generate legal response
+  const generateLegalResponse = (): Message => {
+    return {
+      id: Date.now().toString(),
+      type: 'assistant',
+      content: t(
+        `**Costa Rica Real Estate Law Overview:**\n\nCosta Rica's real estate law follows a civil law system with key regulations under the Civil Code, Property Registry Law, and environmental statutes. Foreigners can own property directly or through Costa Rican entities.\n\n**🏠 Ownership & Foreign Ownership:**\n• Direct title or via S.A./S.R.L. entities\n• Coastal concessions limit foreign participation\n• Residency via property investment possible\n\n**📋 Title Registry & Due Diligence:**\n• Folio Real links owner, history, liens\n• Verify literal extract, liens, plano catastrado\n• Cross-check surveys, resolve overlaps\n\n**🏢 Condominium Law:**\n• Governed by registry-recorded regime\n• Review bylaws, financials, insurance\n• HOA approvals for renovations\n\n**🏖️ Maritime Zone (ZMT) & Concessions:**\n• 0-50m: Public use (no construction)\n• 50-200m: Restricted (municipal concessions)\n• Concessions not fee-simple ownership\n\n**🌿 Environmental & Zoning:**\n• SETENA review for builds near protected areas\n• Uso de Suelo certificates required\n• Water/electrical capacity letters\n\n**🚗 Servidumbres (Easements):**\n• Ingress/egress, utilities, drainage\n• Confirm registry recordation\n\n**⚖️ Transaction Process:**\n• Option-to-buy agreement (10% deposit)\n• 30-45 day due diligence\n• Notarial closing, e-registration\n\n**💰 Taxes & Closing Costs:**\n• Transfer tax: ~1.5% of higher price/fiscal value\n• Stamps: ~0.8%, Notary: 1.0-1.25%\n• Total buyer costs: ~3.5-4.0%\n• Seller capital gains: ~15%\n\n**📝 Key Due Diligence Checklist:**\n• Title extract, tax receipts, land-use letter\n• Water/electrical capacity, environmental screening\n• Seller authority, condominium docs, easements\n\nAlways use a Notario Público and treat missing documents as closing conditions.\n\nWhat specific aspect would you like me to elaborate on?`,
+        `**Resumen de Leyes de Bienes Raíces en Costa Rica:**\n\nLa ley de bienes raíces de Costa Rica sigue un sistema de derecho civil con regulaciones clave bajo el Código Civil, Ley del Registro de la Propiedad y estatutos ambientales. Los extranjeros pueden poseer propiedad directamente o a través de entidades costarricenses.\n\n**🏠 Propiedad y Propiedad Extranjera:**\n• Título directo o vía entidades S.A./S.R.L.\n• Concesiones costeras limitan participación extranjera\n• Residencia vía inversión en propiedad posible\n\n**📋 Registro de Títulos y Debida Diligencia:**\n• Folio Real vincula propietario, historia, gravámenes\n• Verificar extracto literal, gravámenes, plano catastrado\n• Cruzar verificaciones de encuestas, resolver superposiciones\n\n**🏢 Ley de Condominios:**\n• Gobernado por régimen registrado\n• Revisar estatutos, finanzas, seguros\n• Aprobaciones HOA para renovaciones\n\n**🏖️ Zona Marítima (ZMT) y Concesiones:**\n• 0-50m: Uso público (sin construcción)\n• 50-200m: Restringido (concesiones municipales)\n• Concesiones no son propiedad absoluta\n\n**🌿 Ambiental y Zonificación:**\n• Revisión SETENA para construcciones cerca de áreas protegidas\n• Certificados Uso de Suelo requeridos\n• Cartas de capacidad agua/eléctrica\n\n**🚗 Servidumbres (Servidumbres):**\n• Acceso, utilidades, drenaje\n• Confirmar registro en el registro\n\n**⚖️ Proceso de Transacción:**\n• Acuerdo opción de compra (depósito 10%)\n• Debida diligencia 30-45 días\n• Cierre notarial, registro electrónico\n\n**💰 Impuestos y Costos de Cierre:**\n• Impuesto transferencia: ~1.5% del precio más alto/valor fiscal\n• Sellos: ~0.8%, Notario: 1.0-1.25%\n• Costos totales comprador: ~3.5-4.0%\n• Ganancias capital vendedor: ~15%\n\n**📝 Lista de Debida Diligencia Clave:**\n• Extracto de título, recibos impuestos, carta uso suelo\n• Capacidad agua/eléctrica, tamizaje ambiental\n• Autoridad vendedor, docs condominio, servidumbres\n\nSiempre use un Notario Público y trate documentos faltantes como condiciones de cierre.\n\n¿En qué aspecto específico le gustaría que elabore?`
+      ),
+      timestamp: new Date(),
+      metadata: {
+        type: 'legal_info',
+        actions: [
+          { label: t('Ownership details', 'Detalles propiedad'), action: 'ownership_details' },
+          { label: t('Due diligence guide', 'Guía diligencia'), action: 'due_diligence' },
+          { label: t('Transaction process', 'Proceso transacción'), action: 'transaction_process' },
+          { label: t('Taxes & costs', 'Impuestos y costos'), action: 'taxes_costs' }
+        ]
+      }
+    };
+  };
+
+  // Generate market response
+  const generateMarketResponse = (): Message => {
+    return {
+      id: Date.now().toString(),
+      type: 'assistant',
+      content: t(
+        `**Guanacaste Real Estate Market Overview:**\n\n📈 **Current Trends:**\n• Strong international demand\n• Premium properties appreciating\n• Family-friendly areas growing\n\n💰 **Price Ranges by Area:**\n• Tamarindo: $400k - $2M\n• Playa Grande: $800k - $4M\n• Nosara: $600k - $2.5M\n• Sámara: $350k - $1.2M\n\n📊 **Market Status:** Stable growth with high demand\n\nWould you like detailed analysis of any specific area or price trends?`,
+        `**Resumen del Mercado Inmobiliario de Guanacaste:**\n\n📈 **Tendencias Actuales:**\n• Fuerte demanda internacional\n• Propiedades premium apreciándose\n• Zonas amigables para familias creciendo\n\n💰 **Rangos de Precios por Zona:**\n• Tamarindo: $400k - $2M\n• Playa Grande: $800k - $4M\n• Nosara: $600k - $2.5M\n• Sámara: $350k - $1.2M\n\n📊 **Estado del Mercado:** Crecimiento estable con alta demanda\n\n¿Te gustaría análisis detallado de alguna zona específica o tendencias de precios?`
+      ),
+      timestamp: new Date(),
+      metadata: {
+        type: 'market_data',
+        actions: [
+          { label: t('Area analysis', 'Análisis de zona'), action: 'area_analysis' },
+          { label: t('Investment opportunities', 'Oportunidades de inversión'), action: 'investment_opportunities' },
+          { label: t('Price trends', 'Tendencias de precios'), action: 'price_trends' }
+        ]
+      }
+    };
   };
 
   const getContextualResponse = (message: string, context: ConversationContext): string => {
@@ -884,7 +1120,7 @@ const AIPropertyAssistant: React.FC<{
         <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-              <Bot className="w-6 h-6" />
+              <Home className="w-6 h-6" />
             </div>
             <div>
               <h3 className="font-semibold">{t('AI Property Assistant', 'Asistente de Propiedades IA')}</h3>

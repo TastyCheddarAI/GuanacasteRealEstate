@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, BookOpen, Scale, FileText, CheckSquare, Newspaper, ArrowRight, Sparkles, Shield, Users, Award, ChevronRight, ExternalLink } from 'lucide-react';
-import { Button } from '@guanacaste-real/ui';
+import { Button } from '../components/ui';
 
 const Resources = () => {
   const navigate = useNavigate();

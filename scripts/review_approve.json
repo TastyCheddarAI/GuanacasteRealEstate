@@ -1,0 +1,6 @@
+{
+  "reviewer_email": "curator@example.com",
+  "decision": "approve",
+  "queue_id": "REPLACE-QUEUE-ID",
+  "notes": "Verified against municipal PDF v2024-10."
+}

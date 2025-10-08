@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Waves, Sun, Cloud, CloudRain, Wind, DollarSign, Home, Car, Users, Star, ChevronRight, ChevronLeft, Heart, Share2, MessageSquare, Calendar, Clock, Phone, Mail, ExternalLink, Navigation, Camera, Info, TrendingUp, Shield, Zap, Wifi, Droplets, Mountain, TreePine, Fish, Anchor, Utensils, ShoppingBag, Music, Camera as CameraIcon, Map, Thermometer, Eye, Award, Leaf, Dumbbell, Sparkles } from 'lucide-react';
+import { MapPin, Waves, Sun, Cloud, CloudRain, Wind, DollarSign, Home, Car, Users, Star, ChevronRight, ChevronLeft, Heart, Share2, MessageSquare, Calendar, Clock, Phone, Mail, ExternalLink, Navigation, Camera, Info, TrendingUp, Shield, Zap, Wifi, Droplets, Mountain, TreePine, Fish, Anchor, Utensils, ShoppingBag, Music, Camera as CameraIcon, Map, Thermometer, Eye, Award, Leaf, Dumbbell, Sparkles, Loader2 } from 'lucide-react';
+import { useWeather } from '../services/weather';
 
 const Nosara = () => {
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedPropertyType, setSelectedPropertyType] = useState('all');
+
+  // Fetch real weather data for Nosara
+  const { weatherData, loading: weatherLoading, error: weatherError } = useWeather('nosara');
 
   const heroImages = [
     'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200',
@@ -56,16 +60,6 @@ const Nosara = () => {
     }
   ];
 
-  const weatherData = {
-    current: { temp: 27, condition: 'Partly Cloudy', humidity: 78, wind: 8 },
-    forecast: [
-      { day: 'Today', high: 29, low: 23, condition: 'Partly Cloudy', icon: Cloud },
-      { day: 'Tomorrow', high: 28, low: 22, condition: 'Light Rain', icon: CloudRain },
-      { day: 'Wednesday', high: 30, low: 24, condition: 'Sunny', icon: Sun },
-      { day: 'Thursday', high: 29, low: 23, condition: 'Sunny', icon: Sun },
-      { day: 'Friday', high: 28, low: 22, condition: 'Partly Cloudy', icon: Cloud }
-    ]
-  };
 
   const localAmenities = {
     beaches: [
@@ -372,21 +366,36 @@ const Nosara = () => {
                     <Sun className="w-5 h-5 text-yellow-600" />
                     Current Weather & Forecast
                   </h3>
-                  <div className="grid md:grid-cols-6 gap-4">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-slate-900 mb-1">{weatherData.current.temp}°C</div>
-                      <Cloud className="w-8 h-8 text-slate-600 mx-auto mb-1" />
-                      <div className="text-sm text-slate-600">{weatherData.current.condition}</div>
+                  {weatherLoading ? (
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="w-6 h-6 animate-spin text-green-600 mr-2" />
+                      <span className="text-slate-600">Loading weather data...</span>
                     </div>
-                    {weatherData.forecast.map((day, index) => (
-                      <div key={index} className="text-center">
-                        <div className="font-semibold text-slate-900 mb-1">{day.day}</div>
-                        <day.icon className="w-6 h-6 text-slate-600 mx-auto mb-1" />
-                        <div className="text-sm text-slate-900">{day.high}°/{day.low}°</div>
-                        <div className="text-xs text-slate-600">{day.condition}</div>
+                  ) : weatherError ? (
+                    <div className="text-center py-8">
+                      <p className="text-slate-600 mb-2">Weather data temporarily unavailable</p>
+                      <p className="text-sm text-slate-500">Showing estimated conditions</p>
+                    </div>
+                  ) : weatherData ? (
+                    <div className="grid md:grid-cols-6 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-slate-900 mb-1">{weatherData.current.temp}°C</div>
+                        <weatherData.current.icon className="w-8 h-8 text-slate-600 mx-auto mb-1" />
+                        <div className="text-sm text-slate-600">{weatherData.current.condition}</div>
+                        <div className="text-xs text-slate-500 mt-1">
+                          Humidity: {weatherData.current.humidity}% • Wind: {weatherData.current.windSpeed} km/h
+                        </div>
                       </div>
-                    ))}
-                  </div>
+                      {weatherData.forecast.map((day, index) => (
+                        <div key={index} className="text-center">
+                          <div className="font-semibold text-slate-900 mb-1">{day.day}</div>
+                          <day.icon className="w-6 h-6 text-slate-600 mx-auto mb-1" />
+                          <div className="text-sm text-slate-900">{day.high}°/{day.low}°</div>
+                          <div className="text-xs text-slate-600">{day.condition}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
 
                 {/* Interactive Map Placeholder */}

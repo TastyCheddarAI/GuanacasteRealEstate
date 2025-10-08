@@ -1,0 +1,10 @@
+{
+  "email": "admin@example.com",
+  "title": "Publish: Santa Cruz Coastal Zoning v1",
+  "description": "Motion to publish approved doc and trigger re-embedding.",
+  "payload": {
+    "action":"publish_doc",
+    "kb_doc_id":"REPLACE-KB-ID",
+    "version":1
+  }
+}

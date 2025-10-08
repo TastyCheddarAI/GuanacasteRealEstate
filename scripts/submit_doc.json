@@ -1,0 +1,14 @@
+{
+  "email": "author@example.com",
+  "display_name": "Author One",
+  "role": "author",
+  "doc": {
+    "title": "Santa Cruz Coastal Zoning — Summary (Public)",
+    "topic": "permits_zoning",
+    "location_scope": "guanacaste",
+    "sensitivity": "public",
+    "verified": true,
+    "law_refs": [{"cite":"Plan Regulador Costero Santa Cruz","url":"https://example.com"}],
+    "content_md": "## Santa Cruz Coastal Zoning\n- Summary of beach setbacks, permitted uses, and PDOs.\n- Confirm updates with municipality prior to design.\n- Coastal concessions must align with use category.\n"
+  }
+}

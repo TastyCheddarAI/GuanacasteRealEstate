@@ -38,8 +38,14 @@ export default function Header() {
     <header className="border-b bg-white/95 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-6">
-          <button onClick={() => navigate('/')} className="text-xl font-bold hover:text-cyan-600 transition-colors">
-            Guanacaste Real
+          <button onClick={() => navigate('/')} className="flex items-center gap-3 hover:opacity-90 transition-opacity">
+            <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
+              <Home className="w-5 h-5 text-white" />
+            </div>
+            <div className="hidden sm:block">
+              <div className="text-lg font-bold text-slate-900">Guanacaste Real</div>
+              <div className="text-xs text-slate-500">Costa Rica's Gold Coast</div>
+            </div>
           </button>
 
           {/* Navigation Links */}

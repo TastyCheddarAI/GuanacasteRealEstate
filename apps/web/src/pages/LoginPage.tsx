@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button } from '@guanacaste-real/ui'
-import { Input } from '@guanacaste-real/ui'
-import { Card, CardContent, CardHeader, CardTitle } from '@guanacaste-real/ui'
+import { Button } from '../components/ui'
+import { Input } from '../components/ui'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui'
 import { useAuth } from '../contexts/AuthContext'
 
 export default function LoginPage() {

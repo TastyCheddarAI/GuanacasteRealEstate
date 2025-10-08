@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Guanacaste AI — Admin</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>
+    body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:#0b1320;color:#eaf2ff}
+    header{padding:16px 20px;background:#0e1a33;display:flex;align-items:center;gap:10px}
+    .container{max-width:1100px;margin:20px auto;padding:0 16px}
+    h2{margin-top:30px;border-bottom:1px solid #23345c;padding-bottom:6px}
+    .card{background:#101a31;border:1px solid #1d2a4a;border-radius:12px;padding:14px;margin:12px 0}
+    input,select,button,textarea{background:#132243;color:#eaf2ff;border:1px solid #2c3e69;border-radius:8px;padding:8px}
+    button{cursor:pointer}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid #2a3b66;padding:8px;text-align:left}
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#1a2a4f;margin-right:6px}
+    .muted{opacity:.8}
+    .ok{color:#7ef29a}
+    .warn{color:#ffd86b}
+    .bad{color:#ff7d7d}
+  </style>
+</head>
+<body>
+  <header>
+    <h1 style="margin:0;font-size:18px;">Guanacaste AI — Admin Panel</h1>
+    <div class="row" style="margin-left:auto">
+      <input id="admintoken" placeholder="Admin Token" style="width:260px"/>
+      <button onclick="saveToken()">Save</button>
+    </div>
+  </header>
+  <div class="container">
+    <h2>Contributors</h2>
+    <div class="card">
+      <div class="row">
+        <input id="c_email" placeholder="Email" style="min-width:220px"/>
+        <input id="c_name" placeholder="Display Name" style="min-width:180px"/>
+        <select id="c_role">
+          <option>author</option>
+          <option>curator</option>
+          <option>admin</option>
+          <option>viewer</option>
+        </select>
+        <input id="c_badges" placeholder='Badges (JSON e.g. ["verified_notary"])' style="min-width:220px"/>
+        <input id="c_expertise" placeholder='Expertise (JSON e.g. ["legal","local_expert"])' style="min-width:240px"/>
+        <button onclick="addContributor()">Add/Update</button>
+        <button onclick="loadContribs()">Refresh</button>
+      </div>
+    </div>
+    <div id="contributors" class="card"></div>
+    <h2>Proposals & Weighted Votes</h2>
+    <div class="card">
+      <div class="row">
+        <button onclick="loadProposals()">Load Proposals</button>
+        <input id="pid" placeholder="Proposal ID" style="width:340px"/>
+        <button onclick="viewProposal()">View Selected</button>
+      </div>
+    </div>
+    <div id="proposals" class="card"></div>
+    <div id="proposal_detail" class="card"></div>
+  </div>
+  <script>
+    const ADMIN_FUNCTION_BASE = "/functions/v1";
+    const LS_KEY = "guanacaste_admin_token";
+
+    function token(){ return localStorage.getItem(LS_KEY) || document.getElementById('admintoken').value.trim(); }
+    function saveToken(){ localStorage.setItem(LS_KEY, document.getElementById('admintoken').value.trim()); alert("Saved"); }
+
+    async function api(path, opts={}){
+      const headers = Object.assign({"Content-Type":"application/json","x-admin-token":token()}, opts.headers||{});
+      const res = await fetch(ADMIN_FUNCTION_BASE + path, {...opts, headers});
+      const data = await res.json().catch(()=>({}));
+      if(!res.ok){ console.error("API error", data); alert("API error: "+(data.error||res.status)); }
+      return data;
+    }
+
+    // Contributors
+    async function loadContribs(){
+      const data = await api("/admin_contributors?q=list", { method:"GET" });
+      const root = document.getElementById("contributors");
+      if(!data.ok){ root.innerHTML = "Failed."; return; }
+      const rows = (data.contributors||[]).map(c => `<tr>
+        <td><b>${c.display_name}</b><div class="muted">${c.email}</div></td>
+        <td>${c.role}</td>
+        <td>${Number(c.rep_score).toFixed(2)}</td>
+        <td>${Array.isArray(c.badges)?c.badges.map(b=>`<span class="pill">${b}</span>`).join(""):""}</td>
+        <td>${Array.isArray(c.expertise)?c.expertise.join(", "):""}</td>
+        <td>${c.slashed ? '<span class="bad">SLASHED</span>' : ''}</td>
+        <td>
+          <button onclick='editContrib(${JSON.stringify(c)})'>Edit</button>
+        </td>
+      </tr>`).join("");
+      root.innerHTML = `<table>
+        <thead><tr><th>Contributor</th><th>Role</th><th>Rep</th><th>Badges</th><th>Expertise</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+    }
+
+    function editContrib(c){
+      const role = prompt("Role (author/curator/admin/viewer):", c.role) || c.role;
+      const badges = prompt('Badges JSON:', JSON.stringify(c.badges||[]));
+      const expertise = prompt('Expertise JSON:', JSON.stringify(c.expertise||[]));
+      const repDelta = prompt('Rep delta (e.g. 0.5 or -1.0; leave blank for none):', "");
+      const slashReason = repDelta ? prompt('Reason (note):', "manual adjust") : "";
+      const body = { id: c.id, role, badges: badges ? JSON.parse(badges) : c.badges, expertise: expertise ? JSON.parse(expertise) : c.expertise };
+      if (repDelta && !isNaN(parseFloat(repDelta))) { body.rep_delta = parseFloat(repDelta); body.slash_reason = slashReason; }
+      api("/admin_contributors", { method:"PATCH", body: JSON.stringify(body) }).then(loadContribs);
+    }
+
+    function addContributor(){
+      const email = document.getElementById("c_email").value.trim();
+      const display_name = document.getElementById("c_name").value.trim();
+      const role = document.getElementById("c_role").value;
+      const badges = document.getElementById("c_badges").value.trim();
+      const expertise = document.getElementById("c_expertise").value.trim();
+      if(!email || !display_name) return alert("Email & Display Name required");
+      let b = []; let e = [];
+      try{ if(badges) b = JSON.parse(badges); } catch(_){}
+      try{ if(expertise) e = JSON.parse(expertise); } catch(_){}
+      api("/admin_contributors", { method:"POST", body: JSON.stringify({ email, display_name, role, badges:b, expertise:e }) }).then(loadContribs);
+    }
+
+    // Proposals
+    async function loadProposals(){
+      const data = await api("/admin_votes", { method:"GET" });
+      const root = document.getElementById("proposals");
+      if(!data.ok){ root.innerHTML = "Failed."; return; }
+      const rows = (data.proposals||[]).map(p => `<tr>
+        <td><b>${p.title}</b><div class="muted">${p.id}</div></td>
+        <td>${p.status}</td>
+        <td>quorum ${p.quorum}, pass ≥ ${(p.pass_ratio*100).toFixed(0)}%</td>
+        <td>${new Date(p.created_at).toLocaleString()} → ${new Date(p.closes_at).toLocaleString()}</td>
+        <td><button onclick="document.getElementById('pid').value='${p.id}'; viewProposal()">Open</button></td>
+      </tr>`).join("");
+      root.innerHTML = `<table>
+        <thead><tr><th>Proposal</th><th>Status</th><th>Rules</th><th>Window</th><th>Action</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+    }
+
+    async function viewProposal(){
+      const pid = document.getElementById("pid").value.trim();
+      if(!pid) return alert("Enter a Proposal ID");
+      const data = await api("/admin_votes?proposal_id="+encodeURIComponent(pid), { method:"GET" });
+      const root = document.getElementById("proposal_detail");
+      if(!data.ok){ root.innerHTML = "Failed."; return; }
+      const p = data.proposal;
+      const tally = data.tally || { yes:0, no:0, abstain:0, total:0 };
+      const votes = data.votes || [];
+      const voters = data.voters || {};
+      const rows = votes.map(v => {
+        const c = voters[v.voter] || {};
+        const w = v.weight_calc?.final ?? c.rep_score ?? 1;
+        return `<tr>
+          <td><b>${c.display_name||v.voter}</b><div class="muted">${c.email||""}</div></td>
+          <td>${v.choice}</td>
+          <td>${Array.isArray(c.badges)?c.badges.map(b=>`<span class="pill">${b}</span>`).join(""):""}</td>
+          <td>${Number(w).toFixed(2)}</td>
+        </tr>`;
+      }).join("");
+      root.innerHTML = `<div><b>${p.title}</b><div class="muted">${p.id}</div></div>
+        <div class="row" style="margin:10px 0;">
+          <div class="pill">Status: ${p.status}</div>
+          <div class="pill">Quorum: ${p.quorum}</div>
+          <div class="pill">Pass ≥ ${(p.pass_ratio*100).toFixed(0)}%</div>
+          <div class="pill">Created: ${new Date(p.created_at).toLocaleString()}</div>
+          <div class="pill">Closes: ${new Date(p.closes_at).toLocaleString()}</div>
+        </div>
+        <div class="row" style="margin:10px 0;">
+          <div class="pill ok">YES: ${Number(tally.yes||0).toFixed(2)}</div>
+          <div class="pill bad">NO: ${Number(tally.no||0).toFixed(2)}</div>
+          <div class="pill warn">ABSTAIN: ${Number(tally.abstain||0).toFixed(2)}</div>
+          <div class="pill">TOTAL: ${Number(tally.total||0).toFixed(2)}</div>
+        </div>
+        <table>
+          <thead><tr><th>Voter</th><th>Choice</th><th>Badges</th><th>Weight</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+    }
+
+    // init
+    document.addEventListener("DOMContentLoaded", ()=>{
+      const t = localStorage.getItem("guanacaste_admin_token");
+      if (t) document.getElementById("admintoken").value = t;
+      loadContribs();
+      loadProposals();
+    });
+  </script>
+</body>
+</html>
