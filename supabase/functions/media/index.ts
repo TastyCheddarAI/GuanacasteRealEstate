@@ -1,6 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
-import sharp from 'https://esm.sh/sharp-deno@0.0.6';
+import sharp from 'npm:sharp';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
