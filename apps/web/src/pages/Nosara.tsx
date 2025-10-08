@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Waves, Sun, Cloud, CloudRain, Wind, DollarSign, Home, Car, Users, Star, ChevronRight, ChevronLeft, Heart, Share2, MessageSquare, Calendar, Clock, Phone, Mail, ExternalLink, Navigation, Camera, Info, TrendingUp, Shield, Zap, Wifi, Droplets, Mountain, TreePine, Fish, Anchor, Utensils, ShoppingBag, Music, Camera as CameraIcon, Map, Thermometer, Eye, Award, Leaf, Dumbbell, Sparkles, Loader2 } from 'lucide-react';
 import { useWeather } from '../services/weather';
+import MapboxMap from '../components/MapboxMap';
 
 const Nosara = () => {
   const navigate = useNavigate();
@@ -11,6 +12,8 @@ const Nosara = () => {
 
   // Fetch real weather data for Nosara
   const { weatherData, loading: weatherLoading, error: weatherError } = useWeather('nosara');
+
+  const mapMarkers = [];
 
   const heroImages = [
     'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200',
@@ -398,16 +401,13 @@ const Nosara = () => {
                   ) : null}
                 </div>
 
-                {/* Interactive Map Placeholder */}
-                <div className="bg-slate-100 rounded-xl h-96 flex items-center justify-center border-2 border-dashed border-slate-300">
-                  <div className="text-center">
-                    <Map className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-slate-900 mb-2">Interactive Nosara Map</h3>
-                    <p className="text-slate-600 mb-4">Explore beaches, yoga studios, and nature reserves</p>
-                    <button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
-                      View Full Map
-                    </button>
-                  </div>
+                {/* Interactive Map */}
+                <div className="bg-white rounded-xl overflow-hidden shadow-lg border border-slate-200">
+                  <MapboxMap
+                    center={{ latitude: 9.9787, longitude: -85.6544 }}
+                    zoom={12}
+                    markers={mapMarkers}
+                  />
                 </div>
               </div>
             )}
