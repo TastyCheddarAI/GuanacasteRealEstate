@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Waves, Sun, Cloud, CloudRain, Wind, DollarSign, Home, Car, Users, Star, ChevronRight, ChevronLeft, Heart, Share2, MessageSquare, Calendar, Clock, Phone, Mail, ExternalLink, Navigation, Camera, Info, TrendingUp, Shield, Zap, Wifi, Droplets, Mountain, TreePine, Fish, Anchor, Utensils, ShoppingBag, Music, Camera as CameraIcon, Map, Thermometer, Eye, Award, TreePine as Tree, Bird, Waves as Surf, Loader2 } from 'lucide-react';
 import { useWeather } from '../services/weather';
+import MapboxMap from '../components/MapboxMap';
 
 const PlayaGrande = () => {
   const navigate = useNavigate();
@@ -60,6 +61,48 @@ const PlayaGrande = () => {
     }
   ];
 
+  const mapMarkers = [
+    {
+      id: 'playa-grande-beach',
+      latitude: 10.3269,
+      longitude: -85.8522,
+      title: 'Playa Grande Beach',
+      description: '4km pristine beach, turtle nesting sanctuary, world-class surfing',
+      type: 'beach' as const
+    },
+    {
+      id: 'mal-pais-beach',
+      latitude: 10.3200,
+      longitude: -85.8200,
+      title: 'Mal País Beach',
+      description: 'Secluded beach perfect for surfing and relaxation',
+      type: 'beach' as const
+    },
+    {
+      id: 'surf-school',
+      latitude: 10.3280,
+      longitude: -85.8500,
+      title: 'Playa Grande Surf School',
+      description: 'Professional surf lessons and board rentals',
+      type: 'activity' as const
+    },
+    {
+      id: 'turtle-conservation',
+      latitude: 10.3250,
+      longitude: -85.8550,
+      title: 'Ostional Wildlife Refuge',
+      description: 'Sea turtle conservation and guided tours',
+      type: 'activity' as const
+    },
+    {
+      id: 'el-patio',
+      latitude: 10.3275,
+      longitude: -85.8510,
+      title: 'El Patio Restaurant',
+      description: 'Fresh seafood and Costa Rican cuisine',
+      type: 'restaurant' as const
+    }
+  ];
 
   const localAmenities = {
     beaches: [
@@ -241,12 +284,12 @@ const PlayaGrande = () => {
           <div className="text-center text-white max-w-4xl px-4">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
               Playa Grande
-              <span className="block text-3xl md:text-4xl font-normal text-emerald-300 mt-2">
-                Turtle Sanctuary & Eco-Paradise
+              <span className="block text-3xl md:text-4xl font-normal text-cyan-300 mt-2">
+                World-Class Surfing & Turtle Sanctuary
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-slate-200 mb-8 max-w-2xl mx-auto">
-              Where conservation meets adventure. Costa Rica's most pristine beach destination.
+              Costa Rica's surfing paradise meets critical sea turtle conservation. Ride legendary waves by day, protect endangered species by night.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <button className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-2xl hover:shadow-emerald-500/50 hover:scale-105 transition-all duration-300">
@@ -331,10 +374,10 @@ const PlayaGrande = () => {
                   <div>
                     <h3 className="text-2xl font-bold text-slate-900 mb-4">About Playa Grande</h3>
                     <p className="text-slate-700 leading-relaxed mb-4">
-                      Playa Grande is Costa Rica's most important sea turtle nesting sanctuary, where conservation and community come together in perfect harmony. This pristine 4km stretch of beach serves as a critical nesting ground for four species of endangered sea turtles, making it one of the most ecologically significant beaches in the world.
+                      Playa Grande is Costa Rica's premier surfing destination and most important sea turtle nesting sanctuary. This pristine 4km stretch of beach combines world-class waves with critical conservation efforts, serving as a nesting ground for four species of endangered sea turtles.
                     </p>
                     <p className="text-slate-700 leading-relaxed">
-                      Beyond its conservation importance, Playa Grande offers world-class surfing, eco-tourism opportunities, and a growing community of environmentally conscious residents who value sustainable living and natural beauty.
+                      Known globally for its consistent, powerful surf breaks, Playa Grande attracts professional surfers and beginners alike. Beyond the waves, it offers eco-tourism opportunities and a growing community of environmentally conscious residents committed to sustainable living and protecting this natural paradise.
                     </p>
                   </div>
                   <div>
@@ -345,8 +388,8 @@ const PlayaGrande = () => {
                         <span className="text-slate-700">Critical sea turtle nesting sanctuary</span>
                       </li>
                       <li className="flex items-start gap-3">
-                        <Surf className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-slate-700">World-class surfing with consistent waves</span>
+                        <Surf className="w-5 h-5 text-cyan-600 flex-shrink-0 mt-0.5" />
+                        <span className="text-slate-700">World-class surfing with legendary breaks and year-round waves</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <Shield className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
@@ -398,16 +441,21 @@ const PlayaGrande = () => {
                   ) : null}
                 </div>
 
-                {/* Interactive Map Placeholder */}
-                <div className="bg-slate-100 rounded-xl h-96 flex items-center justify-center border-2 border-dashed border-slate-300">
-                  <div className="text-center">
-                    <Map className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-slate-900 mb-2">Interactive Playa Grande Map</h3>
-                    <p className="text-slate-600 mb-4">Explore turtle nesting zones, surf spots, and eco-lodges</p>
-                    <button className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
-                      View Full Map
-                    </button>
+                {/* Interactive Map */}
+                <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200">
+                  <div className="p-4 border-b border-slate-200">
+                    <h3 className="text-xl font-semibold text-slate-900 flex items-center gap-2">
+                      <Map className="w-5 h-5 text-emerald-600" />
+                      Explore Playa Grande
+                    </h3>
+                    <p className="text-slate-600 text-sm">Discover beaches, surf spots, restaurants, and conservation areas</p>
                   </div>
+                  <MapboxMap
+                    markers={mapMarkers}
+                    center={{ latitude: 10.3269, longitude: -85.8522 }}
+                    zoom={13}
+                    height="500px"
+                  />
                 </div>
               </div>
             )}

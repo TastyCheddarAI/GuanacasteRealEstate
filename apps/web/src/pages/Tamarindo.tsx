@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MapPin, Waves, Sun, Cloud, CloudRain, Wind, DollarSign, Home, Car, Users, Star, ChevronRight, ChevronLeft, Heart, Share2, MessageSquare, Calendar, Clock, Phone, Mail, ExternalLink, Navigation, Camera, Info, TrendingUp, Shield, Zap, Wifi, Droplets, Mountain, TreePine, Fish, Anchor, Utensils, ShoppingBag, Music, Camera as CameraIcon, Map, Thermometer, Eye, Award, Loader2 } from 'lucide-react';
 import { useWeather } from '../services/weather';
 import SEO from '../components/SEO';
+import MapboxMap from '../components/MapboxMap';
 
 const Tamarindo = () => {
   const navigate = useNavigate();
@@ -61,6 +62,48 @@ const Tamarindo = () => {
     }
   ];
 
+  const mapMarkers = [
+    {
+      id: 'tamarindo-beach',
+      latitude: 10.2969,
+      longitude: -85.8411,
+      title: 'Tamarindo Beach',
+      description: 'World-famous surfing beach with consistent waves and water sports',
+      type: 'beach' as const
+    },
+    {
+      id: 'playa-grande-beach',
+      latitude: 10.3269,
+      longitude: -85.8522,
+      title: 'Playa Grande Beach',
+      description: 'Protected turtle nesting sanctuary with pristine coastline',
+      type: 'beach' as const
+    },
+    {
+      id: 'surf-school',
+      latitude: 10.2980,
+      longitude: -85.8400,
+      title: 'Tamarindo Surf School',
+      description: 'Professional surf lessons for all skill levels',
+      type: 'activity' as const
+    },
+    {
+      id: 'el-patio',
+      latitude: 10.2975,
+      longitude: -85.8420,
+      title: 'El Patio Restaurant',
+      description: 'International cuisine with ocean views',
+      type: 'restaurant' as const
+    },
+    {
+      id: 'noguis',
+      latitude: 10.2990,
+      longitude: -85.8390,
+      title: 'Nogui\'s Seafood',
+      description: 'Fresh seafood and traditional Costa Rican dishes',
+      type: 'restaurant' as const
+    }
+  ];
 
   const localAmenities = {
     beaches: [
@@ -452,16 +495,21 @@ const Tamarindo = () => {
                   ) : null}
                 </div>
 
-                {/* Interactive Map Placeholder */}
-                <div className="bg-slate-100 rounded-xl h-96 flex items-center justify-center border-2 border-dashed border-slate-300">
-                  <div className="text-center">
-                    <Map className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-slate-900 mb-2">Interactive Tamarindo Map</h3>
-                    <p className="text-slate-600 mb-4">Explore beaches, restaurants, and attractions</p>
-                    <button className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
-                      View Full Map
-                    </button>
+                {/* Interactive Map */}
+                <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200">
+                  <div className="p-4 border-b border-slate-200">
+                    <h3 className="text-xl font-semibold text-slate-900 flex items-center gap-2">
+                      <Map className="w-5 h-5 text-cyan-600" />
+                      Explore Tamarindo
+                    </h3>
+                    <p className="text-slate-600 text-sm">Discover beaches, surf spots, restaurants, and local attractions</p>
                   </div>
+                  <MapboxMap
+                    markers={mapMarkers}
+                    center={{ latitude: 10.2969, longitude: -85.8411 }}
+                    zoom={13}
+                    height="500px"
+                  />
                 </div>
               </div>
             )}
