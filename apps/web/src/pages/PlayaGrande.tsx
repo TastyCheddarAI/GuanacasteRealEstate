@@ -61,48 +61,7 @@ const PlayaGrande = () => {
     }
   ];
 
-  const mapMarkers = [
-    {
-      id: 'playa-grande-beach',
-      latitude: 10.3269,
-      longitude: -85.8522,
-      title: 'Playa Grande Beach',
-      description: '4km pristine beach, turtle nesting sanctuary, world-class surfing',
-      type: 'beach' as const
-    },
-    {
-      id: 'mal-pais-beach',
-      latitude: 10.3200,
-      longitude: -85.8200,
-      title: 'Mal País Beach',
-      description: 'Secluded beach perfect for surfing and relaxation',
-      type: 'beach' as const
-    },
-    {
-      id: 'surf-school',
-      latitude: 10.3280,
-      longitude: -85.8500,
-      title: 'Playa Grande Surf School',
-      description: 'Professional surf lessons and board rentals',
-      type: 'activity' as const
-    },
-    {
-      id: 'turtle-conservation',
-      latitude: 10.3250,
-      longitude: -85.8550,
-      title: 'Ostional Wildlife Refuge',
-      description: 'Sea turtle conservation and guided tours',
-      type: 'activity' as const
-    },
-    {
-      id: 'el-patio',
-      latitude: 10.3275,
-      longitude: -85.8510,
-      title: 'El Patio Restaurant',
-      description: 'Fresh seafood and Costa Rican cuisine',
-      type: 'restaurant' as const
-    }
-  ];
+  const mapMarkers = [];
 
   const localAmenities = {
     beaches: [

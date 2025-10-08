@@ -62,48 +62,7 @@ const Tamarindo = () => {
     }
   ];
 
-  const mapMarkers = [
-    {
-      id: 'tamarindo-beach',
-      latitude: 10.2969,
-      longitude: -85.8411,
-      title: 'Tamarindo Beach',
-      description: 'World-famous surfing beach with consistent waves and water sports',
-      type: 'beach' as const
-    },
-    {
-      id: 'playa-grande-beach',
-      latitude: 10.3269,
-      longitude: -85.8522,
-      title: 'Playa Grande Beach',
-      description: 'Protected turtle nesting sanctuary with pristine coastline',
-      type: 'beach' as const
-    },
-    {
-      id: 'surf-school',
-      latitude: 10.2980,
-      longitude: -85.8400,
-      title: 'Tamarindo Surf School',
-      description: 'Professional surf lessons for all skill levels',
-      type: 'activity' as const
-    },
-    {
-      id: 'el-patio',
-      latitude: 10.2975,
-      longitude: -85.8420,
-      title: 'El Patio Restaurant',
-      description: 'International cuisine with ocean views',
-      type: 'restaurant' as const
-    },
-    {
-      id: 'noguis',
-      latitude: 10.2990,
-      longitude: -85.8390,
-      title: 'Nogui\'s Seafood',
-      description: 'Fresh seafood and traditional Costa Rican dishes',
-      type: 'restaurant' as const
-    }
-  ];
+  const mapMarkers = [];
 
   const localAmenities = {
     beaches: [
