@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-// import Map, { Marker, Popup } from 'react-map-gl';
-// import 'mapbox-gl/dist/mapbox-gl.css';
+import Map, { Marker, Popup } from '@vis.gl/react-mapbox';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 interface MapMarker {
   id: string;
@@ -109,7 +109,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({
             onClose={() => setSelectedMarker(null)}
             closeButton={true}
             closeOnClick={false}
-            offsetTop={-10}
+            offset={[0, -10]}
           >
             <div className="p-2">
               <h3 className="font-semibold text-slate-900 mb-1">{selectedMarker.title}</h3>
