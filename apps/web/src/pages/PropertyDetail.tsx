@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { MapPin, Bed, Bath, Maximize, Calendar, Heart, Share2, Phone, Mail, MessageSquare, Star, ChevronLeft, ChevronRight, Camera, Shield, Check, Clock, Award, Users, ExternalLink, Zap, Waves, Home, Car, Wifi, Mountain, Eye, DollarSign, Ruler, Compass, Loader2 } from 'lucide-react';
 import AIPropertyAssistant from '../components/AIPropertyAssistant';
+import MapboxMap from '../components/MapboxMap';
 import SEO, { generatePropertyStructuredData } from '../components/SEO';
 import { propertiesAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -391,12 +392,23 @@ const PropertyDetail = () => {
                         <MapPin className="w-5 h-5 text-slate-500" />
                         <span>{property.location}</span>
                       </div>
-                      <div className="bg-slate-100 rounded-xl h-64 flex items-center justify-center">
-                        <div className="text-center">
-                          <Compass className="w-12 h-12 text-slate-400 mx-auto mb-2" />
-                          <p className="text-slate-600">Interactive Map</p>
-                          <p className="text-sm text-slate-500">Lat: {property.coordinates.lat}, Lng: {property.coordinates.lng}</p>
-                        </div>
+                      <div className="rounded-xl overflow-hidden border border-slate-200">
+                        <MapboxMap
+                          markers={[{
+                            id: property.id.toString(),
+                            latitude: property.coordinates.lat,
+                            longitude: property.coordinates.lng,
+                            title: property.title,
+                            description: property.location,
+                            type: 'property'
+                          }]}
+                          center={{
+                            latitude: property.coordinates.lat,
+                            longitude: property.coordinates.lng
+                          }}
+                          zoom={15}
+                          height="400px"
+                        />
                       </div>
                     </div>
 

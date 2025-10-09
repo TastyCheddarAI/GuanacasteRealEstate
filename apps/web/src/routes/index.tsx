@@ -316,9 +316,9 @@ const GuanacasteRealEstate = () => {
         <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
 
-        <div className="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center mb-10">
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+        <div className="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+          <div className="text-center mb-8 sm:mb-10">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
               Find Pura Vida On<br />
               <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
                 Costa Rica's Gold Coast
@@ -329,23 +329,24 @@ const GuanacasteRealEstate = () => {
           {/* Advanced Search Box */}
           <div className="max-w-5xl mx-auto">
             <div className={`bg-white rounded-2xl shadow-2xl transition-all duration-300 ${searchFocused ? 'ring-4 ring-cyan-500/50' : ''}`}>
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 {/* Property Type Tabs */}
-                <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
+                <div className="flex flex-wrap items-center gap-2 mb-4 sm:mb-6">
                   {propertyTypes.map(type => {
                     const Icon = type.icon;
                     return (
                       <button
                         key={type.id}
                         onClick={() => setActiveFilter(type.id)}
-                        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold whitespace-nowrap transition-all duration-300 ${
+                        className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-semibold text-sm sm:text-base whitespace-nowrap transition-all duration-300 flex-shrink-0 ${
                           activeFilter === type.id
                             ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg'
                             : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                         }`}
                       >
-                        <Icon className="w-4 h-4" />
-                        {type.label}
+                        <Icon className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span className="hidden xs:inline">{type.label}</span>
+                        <span className="xs:hidden">{type.label.split(' ')[0]}</span>
                         <span className="text-xs opacity-75">({type.count})</span>
                       </button>
                     );
@@ -365,10 +366,10 @@ const GuanacasteRealEstate = () => {
                 </div>
 
                 {/* Filter Grid */}
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                    <select className="w-full pl-10 pr-4 py-3 text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:border-cyan-500 focus:outline-none appearance-none cursor-pointer">
+                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
+                    <select className="w-full pl-9 sm:pl-10 pr-4 py-3 text-sm sm:text-base text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:border-cyan-500 focus:outline-none appearance-none cursor-pointer">
                       <option>Price Range</option>
                       <option>Under $200k</option>
                       <option>$200k - $500k</option>
@@ -376,12 +377,12 @@ const GuanacasteRealEstate = () => {
                       <option>$1M - $2M</option>
                       <option>Over $2M</option>
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400 pointer-events-none" />
                   </div>
 
                   <div className="relative">
-                    <Bed className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                    <select className="w-full pl-10 pr-4 py-3 text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:border-cyan-500 focus:outline-none appearance-none cursor-pointer">
+                    <Bed className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
+                    <select className="w-full pl-9 sm:pl-10 pr-4 py-3 text-sm sm:text-base text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:border-cyan-500 focus:outline-none appearance-none cursor-pointer">
                       <option>Bedrooms</option>
                       <option>1+</option>
                       <option>2+</option>
@@ -389,23 +390,23 @@ const GuanacasteRealEstate = () => {
                       <option>4+</option>
                       <option>5+</option>
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400 pointer-events-none" />
                   </div>
 
                   <div className="relative">
-                    <Bath className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                    <select className="w-full pl-10 pr-4 py-3 text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:border-cyan-500 focus:outline-none appearance-none cursor-pointer">
+                    <Bath className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
+                    <select className="w-full pl-9 sm:pl-10 pr-4 py-3 text-sm sm:text-base text-slate-700 bg-slate-50 border border-slate-200 rounded-xl focus:border-cyan-500 focus:outline-none appearance-none cursor-pointer">
                       <option>Bathrooms</option>
                       <option>1+</option>
                       <option>2+</option>
                       <option>3+</option>
                       <option>4+</option>
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400 pointer-events-none" />
                   </div>
 
-                  <button className="flex items-center justify-center gap-2 px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition-all duration-300">
-                    <SlidersHorizontal className="w-5 h-5" />
+                  <button className="flex items-center justify-center gap-2 px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition-all duration-300 text-sm sm:text-base">
+                    <SlidersHorizontal className="w-4 h-4 sm:w-5 sm:h-5" />
                     More Filters
                   </button>
                 </div>
@@ -493,7 +494,7 @@ const GuanacasteRealEstate = () => {
           </div>
 
           {/* Properties Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12">
             {featuredListings.map(property => (
               <PropertyCard key={property.id} property={property} />
             ))}
@@ -517,7 +518,7 @@ const GuanacasteRealEstate = () => {
             <p className="text-xl text-slate-600">Discover Costa Rica's most sought-after beach communities</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {towns.map((town, i) => (
               <div
                 key={i}
@@ -548,7 +549,7 @@ const GuanacasteRealEstate = () => {
       {/* AI Concierge Feature */}
       <section className="py-20 bg-white">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
               <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-700 rounded-full px-4 py-2 mb-6">
                 <Sparkles className="w-4 h-4" />
@@ -661,7 +662,7 @@ const GuanacasteRealEstate = () => {
             <p className="text-xl text-slate-300">The smartest way to buy and sell Costa Rica real estate</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {[
               {
                 icon: DollarSign,
@@ -711,7 +712,7 @@ const GuanacasteRealEstate = () => {
             <p className="text-xl text-slate-600">Choose the plan that fits your needs</p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
             {[
               {
                 name: 'Free FSBO',
@@ -833,7 +834,7 @@ const GuanacasteRealEstate = () => {
             <p className="text-slate-600">4.9/5 average from 200+ reviews</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {[
               {
                 name: 'Sarah Johnson',
@@ -894,19 +895,19 @@ const GuanacasteRealEstate = () => {
           <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
             Join 200+ smart buyers and sellers who've already discovered a better way to do real estate in Guanacaste.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-lg mx-auto">
             <button
               onClick={() => navigate('/list')}
-              className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-10 py-5 rounded-xl font-bold text-lg shadow-2xl hover:shadow-cyan-500/50 hover:scale-105 transition-all duration-300 inline-flex items-center gap-3"
+              className="w-full sm:w-auto bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg shadow-2xl hover:shadow-cyan-500/50 hover:scale-105 transition-all duration-300 inline-flex items-center justify-center gap-3"
             >
-              <Home className="w-5 h-5" />
+              <Home className="w-4 h-4 sm:w-5 sm:h-5" />
               List Your Property Free
             </button>
             <button
               onClick={() => navigate('/free-listings')}
-              className="bg-white/10 backdrop-blur-xl border-2 border-white/30 text-white px-10 py-5 rounded-xl font-bold text-lg hover:bg-white/20 hover:scale-105 transition-all duration-300 inline-flex items-center gap-3"
+              className="w-full sm:w-auto bg-white/10 backdrop-blur-xl border-2 border-white/30 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg hover:bg-white/20 hover:scale-105 transition-all duration-300 inline-flex items-center justify-center gap-3"
             >
-              <Search className="w-5 h-5" />
+              <Search className="w-4 h-4 sm:w-5 sm:h-5" />
               Browse Free Listings
             </button>
           </div>

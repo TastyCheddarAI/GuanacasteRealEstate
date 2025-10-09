@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, MapPin, Home, Building, DollarSign, Bed, Bath, Maximize, Heart, Share2, MessageSquare, Filter, SlidersHorizontal, Grid3x3, List, Navigation, SortAsc, ChevronDown, X, Check, Loader2 } from 'lucide-react';
 import AIPropertyAssistant from '../components/AIPropertyAssistant';
+import MapboxMap from '../components/MapboxMap';
 import SEO from '../components/SEO';
 import { searchAPI } from '../services/api';
 
@@ -87,6 +88,7 @@ const SearchResults = () => {
     baths: property.baths,
     sqft: property.area_m2,
     lot: property.lot_m2,
+    coordinates: { lat: property.lat, lng: property.lng },
     image: property.media?.[0] ? `${SUPABASE_URL}/storage/v1/object/public/properties/${property.media[0].storage_path}` : 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400',
     verified: true, // Assume verified for now
     new: false, // Would need to check date
@@ -553,12 +555,35 @@ const SearchResults = () => {
               </div>
             </div>
 
-            {/* Results Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {searchResults.map(property => (
-                <PropertyCard key={property.id} property={property} />
-              ))}
-            </div>
+            {/* Results Grid/Map */}
+            {viewMode === 'map' ? (
+              <div className="mb-8">
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden" style={{ height: '600px' }}>
+                  <MapboxMap
+                    markers={searchResults.map(property => ({
+                      id: property.id.toString(),
+                      latitude: property.coordinates.lat,
+                      longitude: property.coordinates.lng,
+                      title: property.title,
+                      description: `${property.beds} bed, ${property.baths} bath • ${property.location}`,
+                      type: 'property'
+                    }))}
+                    center={{
+                      latitude: searchResults.length > 0 ? searchResults[0].coordinates.lat : 10.0, // Use first property or default Guanacaste center
+                      longitude: searchResults.length > 0 ? searchResults[0].coordinates.lng : -85.5
+                    }}
+                    zoom={10}
+                    height="600px"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                {searchResults.map(property => (
+                  <PropertyCard key={property.id} property={property} />
+                ))}
+              </div>
+            )}
 
             {/* Load More */}
             <div className="text-center">
