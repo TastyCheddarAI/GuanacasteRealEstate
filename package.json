@@ -9,9 +9,14 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspace=apps/web",
-    "build": "npm run build --workspace=apps/web",
+    "build": "npm run build:packages && npm run build:web",
+    "build:packages": "mkdir -p apps/web/packages && cp -r packages/* apps/web/packages/",
+    "build:web": "npm run build --workspace=apps/web",
+    "build:monorepo": "npm install && npm run build:packages && npm run build:web",
     "lint": "npm run lint --workspace=apps/web",
-    "type-check": "npm run type-check --workspace=apps/web"
+    "type-check": "npm run type-check --workspace=apps/web",
+    "deploy": "npm run build:monorepo && npm run deploy:vercel",
+    "deploy:vercel": "cd apps/web && vercel --prod"
   },
   "devDependencies": {
     "eslint": "^8.57.0",

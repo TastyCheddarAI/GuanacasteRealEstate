@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cp -r ../packages . && npm run build",
+  "buildCommand": "mkdir -p packages && cp -r ../../packages/* packages/ && npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "framework": null,
