@@ -1,0 +1,12 @@
+{
+  "buildCommand": "mkdir -p packages && cp -r ../../packages/* packages/ && npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
