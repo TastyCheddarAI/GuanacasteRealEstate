@@ -141,10 +141,10 @@ run_smoke_tests() {
 
     case $ENVIRONMENT in
         staging)
-            base_url="https://staging.guanacaste-real.com"
+            base_url="https://staging.guanacastereal.com"
             ;;
         production)
-            base_url="https://guanacaste-real.com"
+            base_url="https://guanacastereal.com"
             ;;
     esac
 

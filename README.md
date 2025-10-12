@@ -1,5 +1,12 @@
 # Guanacaste Real Estate Platform
 
+## 🚀 Deployment Rules (HARDCODED)
+- **Production Environment**: Vercel (guanacastereal.com)
+- **Deployment Command**: `npm run deploy:vercel`
+- **Domain**: guanacastereal.com (existing Vercel project)
+- **Never use AWS deployment** for this project
+- **Never create duplicate Vercel projects**
+
 ![Guanacaste Real](https://img.shields.io/badge/Status-Development-orange)
 ![Version](https://img.shields.io/badge/Version-0.1.0-blue)
 ![License](https://img.shields.io/badge/License-Private-red)
@@ -400,10 +407,10 @@ npm run deploy:vercel
 
 ### Getting Help
 
-- **Documentation**: [docs.guanacaste-real.com](https://docs.guanacaste-real.com)
+- **Documentation**: [docs.guanacastereal.com](https://docs.guanacastereal.com)
 - **Issues**: [GitHub Issues](https://github.com/your-org/guanacaste-real/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/your-org/guanacaste-real/discussions)
-- **Email**: support@guanacaste-real.com
+- **Email**: support@guanacastereal.com
 
 ### Community
 

@@ -73,7 +73,7 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
 
   // Skip external requests (except allowed domains)
-  if (!url.origin.includes('guanacaste-real.com') &&
+  if (!url.origin.includes('guanacastereal.com') &&
       !url.origin.includes('localhost') &&
       !url.origin.includes('unsplash.com') &&
       !url.origin.includes('supabase.co')) {

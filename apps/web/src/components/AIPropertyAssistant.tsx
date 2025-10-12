@@ -454,7 +454,7 @@ const AIPropertyAssistant: React.FC<{
   };
 
   const extractImportantFacts = (messages: Message[]): ConversationContext['memory'] => {
-    const importantFacts: ConversationContext['memory']['importantFacts'] = [];
+    const importantFacts: NonNullable<ConversationContext['memory']>['importantFacts'] = [];
     const pendingQuestions: string[] = [];
     const resolvedTopics: string[] = [];
     const userGoals: string[] = [];
@@ -525,14 +525,14 @@ const AIPropertyAssistant: React.FC<{
     });
 
     // Remove duplicates and keep most recent
-    const uniqueFacts = importantFacts.reduce((acc, fact) => {
+    const uniqueFacts = importantFacts.reduce((acc: NonNullable<ConversationContext['memory']>['importantFacts'], fact: NonNullable<ConversationContext['memory']>['importantFacts'][0]) => {
       const existing = acc.find(f => f.fact === fact.fact);
       if (!existing || fact.lastMentioned > existing.lastMentioned) {
         acc = acc.filter(f => f.fact !== fact.fact);
         acc.push(fact);
       }
       return acc;
-    }, [] as typeof importantFacts);
+    }, [] as NonNullable<ConversationContext['memory']>['importantFacts']);
 
     return {
       importantFacts: uniqueFacts,
@@ -2293,8 +2293,8 @@ What specific aspect interests you most?`;
 
         return {
           content: t(
-            `✅ AI Image Analysis completed for "${filename}"\n\n📸 **Description:** ${imageAnalysis.analysis.description}\n\n🏠 **Identified Features:**\n${imageAnalysis.analysis.features.map(f => `• ${f}`).join('\n')}\n\n📊 **Condition Assessment:** ${imageAnalysis.analysis.condition.toUpperCase()}\n\n💡 **Recommendations:**\n${imageAnalysis.analysis.recommendations.map(r => `• ${r}`).join('\n')}\n\n${imageAnalysis.analysis.concerns.length > 0 ? `⚠️ **Concerns:**\n${imageAnalysis.analysis.concerns.map(c => `• ${c}`).join('\n')}\n\n` : ''}Would you like me to analyze this differently or help with property valuation?`,
-            `✅ Análisis de imagen IA completado para "${filename}"\n\n📸 **Descripción:** ${imageAnalysis.analysis.description}\n\n🏠 **Características identificadas:**\n${imageAnalysis.analysis.features.map(f => `• ${f}`).join('\n')}\n\n📊 **Evaluación de condición:** ${imageAnalysis.analysis.condition.toUpperCase()}\n\n💡 **Recomendaciones:**\n${imageAnalysis.analysis.recommendations.map(r => `• ${r}`).join('\n')}\n\n${imageAnalysis.analysis.concerns.length > 0 ? `⚠️ **Preocupaciones:**\n${imageAnalysis.analysis.concerns.map(c => `• ${c}`).join('\n')}\n\n` : ''}¿Te gustaría que analice esto de manera diferente o te ayude con valoración de propiedad?`
+            `✅ AI Image Analysis completed for "${filename}"\n\n📸 **Description:** ${imageAnalysis.analysis.description}\n\n🏠 **Identified Features:**\n${imageAnalysis.analysis.features.map((f: string) => `• ${f}`).join('\n')}\n\n📊 **Condition Assessment:** ${imageAnalysis.analysis.condition.toUpperCase()}\n\n💡 **Recommendations:**\n${imageAnalysis.analysis.recommendations.map((r: string) => `• ${r}`).join('\n')}\n\n${imageAnalysis.analysis.concerns.length > 0 ? `⚠️ **Concerns:**\n${imageAnalysis.analysis.concerns.map((c: string) => `• ${c}`).join('\n')}\n\n` : ''}Would you like me to analyze this differently or help with property valuation?`,
+            `✅ Análisis de imagen IA completado para "${filename}"\n\n📸 **Descripción:** ${imageAnalysis.analysis.description}\n\n🏠 **Características identificadas:**\n${imageAnalysis.analysis.features.map((f: string) => `• ${f}`).join('\n')}\n\n📊 **Evaluación de condición:** ${imageAnalysis.analysis.condition.toUpperCase()}\n\n💡 **Recomendaciones:**\n${imageAnalysis.analysis.recommendations.map((r: string) => `• ${r}`).join('\n')}\n\n${imageAnalysis.analysis.concerns.length > 0 ? `⚠️ **Preocupaciones:**\n${imageAnalysis.analysis.concerns.map((c: string) => `• ${c}`).join('\n')}\n\n` : ''}¿Te gustaría que analice esto de manera diferente o te ayude con valoración de propiedad?`
           ),
           data: imageAnalysis.analysis,
           actions: [
@@ -2330,8 +2330,8 @@ What specific aspect interests you most?`;
 
         return {
           content: t(
-            `✅ AI Document Analysis completed for "${filename}"\n\n📄 **Document Type:** ${documentType.replace('_', ' ').toUpperCase()}\n\n📋 **Summary:** ${analysis.summary}\n\n🔑 **Key Points:**\n${analysis.keyPoints.map(p => `• ${p}`).join('\n')}\n\n⚖️ **Compliance Status:** ${analysis.compliance.status.toUpperCase().replace('_', ' ')}\n\n${analysis.recommendations.length > 0 ? `💡 **Recommendations:**\n${analysis.recommendations.map(r => `• ${r}`).join('\n')}\n\n` : ''}${analysis.risks.length > 0 ? `⚠️ **Risks/Concerns:**\n${analysis.risks.map(r => `• ${r}`).join('\n')}\n\n` : ''}Would you like me to explain any aspect in more detail or help with next steps?`,
-            `✅ Análisis de documento IA completado para "${filename}"\n\n📄 **Tipo de documento:** ${documentType.replace('_', ' ').toUpperCase()}\n\n📋 **Resumen:** ${analysis.summary}\n\n🔑 **Puntos clave:**\n${analysis.keyPoints.map(p => `• ${p}`).join('\n')}\n\n⚖️ **Estado de cumplimiento:** ${analysis.compliance.status.toUpperCase().replace('_', ' ')}\n\n${analysis.recommendations.length > 0 ? `💡 **Recomendaciones:**\n${analysis.recommendations.map(r => `• ${r}`).join('\n')}\n\n` : ''}${analysis.risks.length > 0 ? `⚠️ **Riesgos/Preocupaciones:**\n${analysis.risks.map(r => `• ${r}`).join('\n')}\n\n` : ''}¿Te gustaría que explique algún aspecto con más detalle o te ayude con los siguientes pasos?`
+            `✅ AI Document Analysis completed for "${filename}"\n\n📄 **Document Type:** ${documentType.replace('_', ' ').toUpperCase()}\n\n📋 **Summary:** ${analysis.summary}\n\n🔑 **Key Points:**\n${analysis.keyPoints.map((p: string) => `• ${p}`).join('\n')}\n\n⚖️ **Compliance Status:** ${analysis.compliance.status.toUpperCase().replace('_', ' ')}\n\n${analysis.recommendations.length > 0 ? `💡 **Recommendations:**\n${analysis.recommendations.map((r: string) => `• ${r}`).join('\n')}\n\n` : ''}${analysis.risks.length > 0 ? `⚠️ **Risks/Concerns:**\n${analysis.risks.map((r: string) => `• ${r}`).join('\n')}\n\n` : ''}Would you like me to explain any aspect in more detail or help with next steps?`,
+            `✅ Análisis de documento IA completado para "${filename}"\n\n📄 **Tipo de documento:** ${documentType.replace('_', ' ').toUpperCase()}\n\n📋 **Resumen:** ${analysis.summary}\n\n🔑 **Puntos clave:**\n${analysis.keyPoints.map((p: string) => `• ${p}`).join('\n')}\n\n⚖️ **Estado de cumplimiento:** ${analysis.compliance.status.toUpperCase().replace('_', ' ')}\n\n${analysis.recommendations.length > 0 ? `💡 **Recomendaciones:**\n${analysis.recommendations.map((r: string) => `• ${r}`).join('\n')}\n\n` : ''}${analysis.risks.length > 0 ? `⚠️ **Riesgos/Preocupaciones:**\n${analysis.risks.map((r: string) => `• ${r}`).join('\n')}\n\n` : ''}¿Te gustaría que explique algún aspecto con más detalle o te ayude con los siguientes pasos?`
           ),
           data: analysis,
           actions: [

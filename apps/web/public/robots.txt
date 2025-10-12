@@ -46,7 +46,7 @@ User-agent: PerplexityBot
 Allow: /
 
 # Sitemap
-Sitemap: https://guanacaste-real.com/sitemap.xml
+Sitemap: https://guanacastereal.com/sitemap.xml
 
 # Crawl delay for respectful crawling
 Crawl-delay: 1

@@ -323,7 +323,7 @@ const SearchResults = () => {
           "@type": "SearchResultsPage",
           "name": `Property Search Results${searchQuery ? ` for "${searchQuery}"` : ''}`,
           "description": `Search results for properties in Guanacaste${searchQuery ? ` matching "${searchQuery}"` : ''}`,
-          "url": `https://guanacaste-real.com/search${searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : ''}`,
+          "url": `https://guanacastereal.com/search${searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : ''}`,
           "mainEntity": {
             "@type": "ItemList",
             "numberOfItems": totalResults,
@@ -333,7 +333,7 @@ const SearchResults = () => {
               "item": {
                 "@type": "RealEstateListing",
                 "name": property.title,
-                "url": `https://guanacaste-real.com/property/${property.id}`,
+                "url": `https://guanacastereal.com/property/${property.id}`,
                 "image": property.image,
                 "offers": {
                   "@type": "Offer",

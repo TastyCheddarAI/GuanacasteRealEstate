@@ -238,8 +238,8 @@ We apologize for any inconvenience.
 - **Business Analyst**: [Name] - [Email] - [Phone]
 
 ### Support Team
-- **Customer Support**: support@guanacaste-real.com
-- **Technical Support**: tech@guanacaste-real.com
+- **Customer Support**: support@guanacastereal.com
+- **Technical Support**: tech@guanacastereal.com
 - **Emergency Hotline**: [Phone number]
 
 ### External Partners

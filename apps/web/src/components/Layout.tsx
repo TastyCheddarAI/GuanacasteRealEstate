@@ -6,7 +6,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { changeLanguage, getCurrentLanguage } from '../lib'
 import { useAuth } from '../contexts/AuthContext'
 import Footer from './Footer'
-import InstallPrompt from './InstallPrompt'
 import { PWAUpdateBanner, PWAInstallPrompt } from './PWAUpdateBanner'
 import AIPropertyAssistant from './AIPropertyAssistant'
 import SEO, { generateOrganizationStructuredData, generateWebsiteStructuredData } from './SEO'
@@ -211,7 +210,6 @@ export default function Layout() {
         <Outlet />
       </main>
       <Footer />
-      <InstallPrompt />
 
       {/* PWA Components */}
       <PWAUpdateBanner />

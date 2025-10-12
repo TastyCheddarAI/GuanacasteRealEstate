@@ -86,7 +86,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({
             onClose={() => setSelectedMarker(null)}
             closeButton={true}
             closeOnClick={false}
-            offsetTop={-10}
+            offset={-10}
           >
             <div className="p-2">
               <h3 className="font-semibold text-slate-900">{selectedMarker.title}</h3>

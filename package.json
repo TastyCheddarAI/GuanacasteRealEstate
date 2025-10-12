@@ -28,9 +28,9 @@
     "security:scan": "trivy fs --format json --output security-report.json .",
     "security:deps": "npm run security:audit && npm run security:scan",
 
-    "deploy": "npm run build:monorepo && npm run deploy:production",
+    "deploy": "npm run build:monorepo && npm run deploy:vercel",
     "deploy:staging": "bash scripts/deploy.sh staging",
-    "deploy:production": "bash scripts/deploy.sh production",
+    "deploy:production": "npm run deploy:vercel",
     "deploy:rollback": "bash scripts/deploy.sh production --rollback",
     "deploy:vercel": "cd apps/web && vercel --prod",
 

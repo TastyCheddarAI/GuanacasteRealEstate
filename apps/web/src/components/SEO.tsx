@@ -26,8 +26,8 @@ export default function SEO({
   const siteName = 'Guanacaste Real'
   const defaultTitle = 'Guanacaste Real - Costa Rica\'s Gold Coast Real Estate'
   const fullTitle = title ? `${title} | ${siteName}` : defaultTitle
-  const fullUrl = url ? `https://guanacaste-real.com${url}` : 'https://guanacaste-real.com'
-  const fullImage = image.startsWith('http') ? image : `https://guanacaste-real.com${image}`
+  const fullUrl = url ? `https://guanacastereal.com${url}` : 'https://guanacastereal.com'
+  const fullImage = image.startsWith('http') ? image : `https://guanacastereal.com${image}`
 
   return (
     <Helmet>
@@ -78,7 +78,7 @@ export default function SEO({
 
 // Helper function to generate property structured data
 export function generatePropertyStructuredData(property: any) {
-  const baseUrl = 'https://guanacaste-real.com'
+  const baseUrl = 'https://guanacastereal.com'
 
   return {
     "@context": "https://schema.org",
@@ -138,8 +138,8 @@ export function generateOrganizationStructuredData() {
     "@type": "RealEstateAgent",
     "name": "Guanacaste Real",
     "description": "Costa Rica's premier real estate platform for Guanacaste properties",
-    "url": "https://guanacaste-real.com",
-    "logo": "https://guanacaste-real.com/house-icon.svg",
+    "url": "https://guanacastereal.com",
+    "logo": "https://guanacastereal.com/house-icon.svg",
     "sameAs": [
       "https://www.facebook.com/guanacastereal",
       "https://www.instagram.com/guanacastereal",
@@ -176,12 +176,12 @@ export function generateWebsiteStructuredData() {
     "@type": "WebSite",
     "name": "Guanacaste Real",
     "description": "Discover your dream property in Guanacaste, Costa Rica's Gold Coast",
-    "url": "https://guanacaste-real.com",
+    "url": "https://guanacastereal.com",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": "https://guanacaste-real.com/search?q={search_term_string}"
+        "urlTemplate": "https://guanacastereal.com/search?q={search_term_string}"
       },
       "query-input": "required name=search_term_string"
     },
@@ -201,7 +201,7 @@ export function generateBreadcrumbStructuredData(breadcrumbs: Array<{ name: stri
       "@type": "ListItem",
       "position": index + 1,
       "name": crumb.name,
-      "item": `https://guanacaste-real.com${crumb.url}`
+      "item": `https://guanacastereal.com${crumb.url}`
     }))
   }
 }

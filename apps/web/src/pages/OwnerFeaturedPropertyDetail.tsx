@@ -173,25 +173,26 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Premium Hero Section */}
+      {/* Premium Hero Section - Mobile First */}
       <div className="relative">
-        {/* Responsive Badge Container */}
-        <div className="absolute top-4 left-4 right-4 z-20 flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-start">
-          {/* Priority Placement Badge */}
-          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-2 self-start">
-            <Crown className="w-4 h-4" />
-            OWNER FEATURED - PRIORITY PLACEMENT
+        {/* Mobile-Optimized Badge Container */}
+        <div className="absolute top-3 left-3 right-3 z-20 space-y-2 sm:top-4 sm:left-4 sm:right-4 sm:flex sm:flex-row sm:justify-between sm:items-start sm:space-y-0 sm:gap-3">
+          {/* Priority Placement Badge - Mobile Optimized */}
+          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-bold text-xs sm:text-sm shadow-lg flex items-center gap-1.5 sm:gap-2 w-fit">
+            <Crown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span className="hidden xs:inline">OWNER FEATURED - PRIORITY PLACEMENT</span>
+            <span className="xs:hidden">FEATURED</span>
           </div>
 
-          {/* Enhanced Price Badge */}
-          <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-3 rounded-xl font-bold text-2xl shadow-lg self-end sm:self-start">
+          {/* Enhanced Price Badge - Mobile Optimized */}
+          <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-bold text-lg sm:text-2xl shadow-lg w-fit">
             ${property.price.toLocaleString()} USD
-            <div className="text-sm font-normal opacity-90">Owner Featured</div>
+            <div className="text-xs sm:text-sm font-normal opacity-90">Owner Featured</div>
           </div>
         </div>
 
-        {/* Image Gallery */}
-        <div className="relative h-96 md:h-[700px] bg-slate-200">
+        {/* Image Gallery - Mobile First */}
+        <div className="relative h-[60vh] sm:h-96 md:h-[500px] lg:h-[600px] xl:h-[700px] bg-slate-200">
           {showVideo ? (
             <div className="relative w-full h-full">
               <video
@@ -215,18 +216,18 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
             />
           )}
 
-          {/* Navigation Arrows */}
+          {/* Navigation Arrows - Mobile Optimized */}
           <button
             onClick={prevImage}
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-300 z-10"
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white active:bg-white transition-all duration-300 z-10 touch-manipulation"
           >
-            <ChevronLeft className="w-7 h-7 text-slate-700" />
+            <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 text-slate-700" />
           </button>
           <button
             onClick={nextImage}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-300 z-10"
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white active:bg-white transition-all duration-300 z-10 touch-manipulation"
           >
-            <ChevronRight className="w-7 h-7 text-slate-700" />
+            <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 text-slate-700" />
           </button>
 
           {/* Video Play Button */}
@@ -248,8 +249,8 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
             )}
           </div>
 
-          {/* Enhanced Thumbnail Strip */}
-          <div className="absolute bottom-4 left-4 flex gap-2 overflow-x-auto max-w-[calc(100vw-2rem)] sm:max-w-96">
+          {/* Enhanced Thumbnail Strip - Mobile Optimized */}
+          <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 flex gap-1.5 sm:gap-2 overflow-x-auto max-w-[calc(100vw-1.5rem)] sm:max-w-96 scrollbar-hide">
             {property.images.slice(0, 6).map((img, index) => (
               <button
                 key={index}
@@ -257,8 +258,8 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
                   setCurrentImageIndex(index);
                   setShowVideo(false);
                 }}
-                className={`w-16 h-16 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all duration-300 ${
-                  index === currentImageIndex && !showVideo ? 'border-cyan-500 shadow-lg' : 'border-white/50'
+                className={`w-14 h-14 sm:w-16 sm:h-16 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all duration-300 touch-manipulation ${
+                  index === currentImageIndex && !showVideo ? 'border-cyan-500 shadow-lg scale-105' : 'border-white/50 hover:border-white/80'
                 }`}
               >
                 <img src={img} alt="" className="w-full h-full object-cover" />
@@ -268,150 +269,152 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
               <button
                 key={`video-${index}`}
                 onClick={() => setShowVideo(true)}
-                className={`w-16 h-16 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all duration-300 relative ${
-                  showVideo ? 'border-cyan-500 shadow-lg' : 'border-white/50'
+                className={`w-14 h-14 sm:w-16 sm:h-16 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all duration-300 relative touch-manipulation ${
+                  showVideo ? 'border-cyan-500 shadow-lg scale-105' : 'border-white/50 hover:border-white/80'
                 }`}
               >
                 <img src={video.thumbnail} alt="" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                  <Play className="w-6 h-6 text-white" />
+                  <Play className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
               </button>
             ))}
           </div>
 
-          {/* Premium Action Buttons */}
-          <div className="absolute top-4 right-4 flex gap-3">
+          {/* Premium Action Buttons - Mobile Optimized */}
+          <div className="absolute top-3 right-3 sm:top-4 sm:right-4 flex gap-2 sm:gap-3">
             <button
               onClick={() => setIsSaved(!isSaved)}
-              className="w-14 h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-300"
+              className="w-12 h-12 sm:w-14 sm:h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white active:bg-white transition-all duration-300 touch-manipulation"
             >
-              <Heart className={`w-7 h-7 transition-all duration-300 ${isSaved ? 'fill-red-500 text-red-500' : 'text-slate-700'}`} />
+              <Heart className={`w-6 h-6 sm:w-7 sm:h-7 transition-all duration-300 ${isSaved ? 'fill-red-500 text-red-500' : 'text-slate-700'}`} />
             </button>
-            <button className="w-14 h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-300">
-              <Share2 className="w-7 h-7 text-slate-700" />
+            <button className="w-12 h-12 sm:w-14 sm:h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white active:bg-white transition-all duration-300 touch-manipulation">
+              <Share2 className="w-6 h-6 sm:w-7 sm:h-7 text-slate-700" />
             </button>
             <button
               onClick={generatePDF}
-              className="w-14 h-14 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-cyan-500/50 transition-all duration-300"
+              className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-cyan-500/50 active:shadow-cyan-500/50 transition-all duration-300 touch-manipulation"
             >
-              <Download className="w-7 h-7 text-white" />
+              <Download className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
+      {/* Main Content - Mobile First */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
           {/* Left Column - Property Details */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Premium Header */}
+          <div className="xl:col-span-3 space-y-6 sm:space-y-8">
+            {/* Premium Header - Mobile Optimized */}
             <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-3 py-1 rounded-full text-sm font-bold">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-2.5 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-bold">
                   ⭐ OWNER FEATURED
                 </div>
-                <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+                <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-2.5 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-bold">
                   🔥 PRIORITY PLACEMENT
                 </div>
               </div>
 
-              <h1 className="text-4xl font-bold text-slate-900 mb-2">{property.title}</h1>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-2 leading-tight">{property.title}</h1>
               <div className="flex items-center gap-2 text-slate-600 mb-4">
-                <MapPin className="w-6 h-6" />
-                <span className="text-xl">{property.location}</span>
+                <MapPin className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" />
+                <span className="text-lg sm:text-xl">{property.location}</span>
               </div>
 
-              {/* Enhanced Key Stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-6">
-                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 shadow-sm border border-blue-200">
-                  <Bed className="w-8 h-8 text-blue-600 mb-3" />
-                  <div className="text-3xl font-bold text-slate-900">{property.beds}</div>
-                  <div className="text-sm text-slate-600">Bedrooms</div>
+              {/* Enhanced Key Stats - Mobile Optimized */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6">
+                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm border border-blue-200">
+                  <Bed className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 mb-2 sm:mb-3" />
+                  <div className="text-2xl sm:text-3xl font-bold text-slate-900">{property.beds}</div>
+                  <div className="text-xs sm:text-sm text-slate-600">Bedrooms</div>
                 </div>
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 shadow-sm border border-green-200">
-                  <Bath className="w-8 h-8 text-green-600 mb-3" />
-                  <div className="text-3xl font-bold text-slate-900">{property.baths}</div>
-                  <div className="text-sm text-slate-600">Bathrooms</div>
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm border border-green-200">
+                  <Bath className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 mb-2 sm:mb-3" />
+                  <div className="text-2xl sm:text-3xl font-bold text-slate-900">{property.baths}</div>
+                  <div className="text-xs sm:text-sm text-slate-600">Bathrooms</div>
                 </div>
-                <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 shadow-sm border border-purple-200">
-                  <Maximize className="w-8 h-8 text-purple-600 mb-3" />
-                  <div className="text-3xl font-bold text-slate-900">{property.sqft.toLocaleString()}</div>
-                  <div className="text-sm text-slate-600">Sq Ft</div>
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm border border-purple-200">
+                  <Maximize className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600 mb-2 sm:mb-3" />
+                  <div className="text-xl sm:text-3xl font-bold text-slate-900">{property.sqft.toLocaleString()}</div>
+                  <div className="text-xs sm:text-sm text-slate-600">Sq Ft</div>
                 </div>
-                <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-6 shadow-sm border border-orange-200">
-                  <Ruler className="w-8 h-8 text-orange-600 mb-3" />
-                  <div className="text-3xl font-bold text-slate-900">{property.lot.toLocaleString()}</div>
-                  <div className="text-sm text-slate-600">Lot (m²)</div>
+                <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm border border-orange-200">
+                  <Ruler className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600 mb-2 sm:mb-3" />
+                  <div className="text-xl sm:text-3xl font-bold text-slate-900">{property.lot.toLocaleString()}</div>
+                  <div className="text-xs sm:text-sm text-slate-600">Lot (m²)</div>
                 </div>
               </div>
 
-              {/* Analytics Preview */}
-              <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl p-6 mb-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold flex items-center gap-2">
-                    <BarChart3 className="w-5 h-5" />
+              {/* Analytics Preview - Mobile Optimized */}
+              <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
+                  <h3 className="text-base sm:text-lg font-bold flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5" />
                     Advanced Analytics
                   </h3>
                   <Button
                     onClick={() => setShowAnalytics(true)}
                     variant="outline"
-                    className="border-white/30 text-white hover:bg-white/10"
+                    size="sm"
+                    className="border-white/30 text-white hover:bg-white/10 w-fit"
                   >
                     View Dashboard
                   </Button>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-cyan-300">{property.analytics.views}</div>
+                    <div className="text-xl sm:text-2xl font-bold text-cyan-300">{property.analytics.views}</div>
                     <div className="text-xs text-slate-300">Total Views</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-green-300">{property.analytics.inquiries}</div>
+                    <div className="text-xl sm:text-2xl font-bold text-green-300">{property.analytics.inquiries}</div>
                     <div className="text-xs text-slate-300">Inquiries</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-300">{property.analytics.saves}</div>
+                    <div className="text-xl sm:text-2xl font-bold text-purple-300">{property.analytics.saves}</div>
                     <div className="text-xs text-slate-300">Saves</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-orange-300">{property.analytics.conversionRate}%</div>
+                    <div className="text-xl sm:text-2xl font-bold text-orange-300">{property.analytics.conversionRate}%</div>
                     <div className="text-xs text-slate-300">Conversion</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Enhanced Tabs */}
-            <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-              <div className="flex border-b border-slate-200 overflow-x-auto">
+            {/* Enhanced Tabs - Mobile Optimized */}
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+              <div className="flex border-b border-slate-200 overflow-x-auto scrollbar-hide">
                 {[
-                  { id: 'overview', label: 'Overview', icon: Home },
-                  { id: 'details', label: 'Property Details', icon: FileText },
-                  { id: 'location', label: 'Location & Amenities', icon: MapPin },
-                  { id: 'legal', label: 'Legal Information', icon: Shield },
-                  { id: 'analytics', label: 'Performance Analytics', icon: BarChart3 }
+                  { id: 'overview', label: 'Overview', icon: Home, shortLabel: 'Overview' },
+                  { id: 'details', label: 'Property Details', icon: FileText, shortLabel: 'Details' },
+                  { id: 'location', label: 'Location & Amenities', icon: MapPin, shortLabel: 'Location' },
+                  { id: 'legal', label: 'Legal Information', icon: Shield, shortLabel: 'Legal' },
+                  { id: 'analytics', label: 'Performance Analytics', icon: BarChart3, shortLabel: 'Analytics' }
                 ].map((tab) => {
                   const Icon = tab.icon;
                   return (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold transition-all duration-300 whitespace-nowrap ${
+                      className={`flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-semibold transition-all duration-300 whitespace-nowrap touch-manipulation flex-shrink-0 ${
                         activeTab === tab.id
                           ? 'text-cyan-600 border-b-2 border-cyan-500 bg-cyan-50'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                       }`}
                     >
-                      <Icon className="w-4 h-4" />
-                      {tab.label}
+                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      <span className="hidden xs:inline">{tab.label}</span>
+                      <span className="xs:hidden">{tab.shortLabel}</span>
                     </button>
                   );
                 })}
               </div>
 
-              <div className="p-8">
+              <div className="p-6 lg:p-8">
                 {activeTab === 'overview' && (
                   <div className="space-y-8">
                     <div>
@@ -708,38 +711,39 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
           </div>
 
           {/* Right Column - Premium Contact & Features */}
-          <div className="space-y-6">
-            {/* Premium Contact Card */}
-            <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl shadow-2xl border border-slate-700 p-8 sticky top-6">
+          <div className="space-y-4 sm:space-y-6 xl:col-span-1">
+            {/* Premium Contact Card - Mobile Optimized */}
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-xl sm:rounded-2xl shadow-2xl border border-slate-700 p-4 sm:p-6 lg:p-8 sticky top-6 max-w-sm mx-auto xl:mx-0 w-full">
               <div className="text-center mb-8">
                 <div className="text-4xl font-bold mb-2">${property.price.toLocaleString()}</div>
                 <div className="text-slate-300 text-lg">USD - Owner Featured</div>
                 <div className="mt-2 text-sm text-cyan-300">Priority Placement Active</div>
               </div>
 
-              {/* Premium CTA Buttons */}
-              <div className="space-y-4 mb-8">
+              {/* Premium CTA Buttons - Mobile Optimized */}
+              <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                 <Button
                   onClick={() => setAiAssistantOpen(true)}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-3 text-lg"
+                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-3 sm:py-4 rounded-xl font-bold hover:shadow-lg active:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg touch-manipulation"
                 >
-                  <Sparkles className="w-6 h-6" />
-                  Unlimited AI Concierge
+                  <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <span className="hidden xs:inline">Unlimited AI Concierge</span>
+                  <span className="xs:hidden">AI Assistant</span>
                 </Button>
 
                 <Button
                   onClick={() => setShowBookingModal(true)}
-                  className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-3 text-lg"
+                  className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 sm:py-4 rounded-xl font-bold hover:shadow-lg active:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg touch-manipulation"
                 >
-                  <CalendarIcon className="w-6 h-6" />
+                  <CalendarIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                   Book Showing
                 </Button>
 
                 <Button
                   onClick={generatePDF}
-                  className="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white py-4 rounded-xl font-bold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-3 text-lg"
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white py-3 sm:py-4 rounded-xl font-bold hover:shadow-lg active:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg touch-manipulation"
                 >
-                  <Download className="w-6 h-6" />
+                  <Download className="w-5 h-5 sm:w-6 sm:h-6" />
                   PDF Brochure
                 </Button>
               </div>

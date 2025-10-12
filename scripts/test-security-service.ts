@@ -107,7 +107,7 @@ async function testSecurityService() {
   // Test 6: Origin validation
   console.log('\n6. Testing origin validation...');
 
-  const validOrigin = 'https://guanacaste-real.com';
+  const validOrigin = 'https://guanacastereal.com';
   const invalidOrigin = 'https://malicious-site.com';
 
   const validOriginCheck = securityService.validateOrigin(validOrigin);

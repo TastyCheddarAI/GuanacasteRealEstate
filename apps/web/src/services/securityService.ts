@@ -68,7 +68,7 @@ class SecurityService {
       enableSecureHeaders: true,
       enableCSRFProtection: true,
       enableAuditLogging: true,
-      trustedOrigins: ['http://localhost:3000', 'https://guanacaste-real.com'],
+      trustedOrigins: ['http://localhost:3000', 'https://guanacastereal.com'],
       maxRequestSize: 10 * 1024 * 1024, // 10MB
       sessionTimeout: 24 * 60 * 60 * 1000, // 24 hours
       ...config
