@@ -1,0 +1,188 @@
+import { createClient } from '@supabase/supabase-js'
+
+// Use live/production Supabase credentials
+const supabaseUrl = 'https://edcrblaefapbynsmazdf.supabase.co'
+const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkY3JibGFlZmFwYnluc21hemRmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTUxNDQ5NiwiZXhwIjoyMDc1MDkwNDk2fQ.etJr9jI5-y5Lxo82RnOCr_Woikt5G9CE5rVskTaUqG0'
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
+async function addPropertiesDirect() {
+  console.log('🆕 Adding sample properties directly to live database...')
+
+  const sampleProperties = [
+    // FEATURED PROPERTIES (Paid listings with premium features)
+    {
+      title: 'Oceanfront Luxury Villa - Tamarindo',
+      type: 'house',
+      price_numeric: 1250000,
+      town: 'Tamarindo',
+      lat: 10.295,
+      lng: -85.837,
+      beds: 4,
+      baths: 3,
+      area_m2: 320,
+      lot_m2: 1200,
+      featured: true,
+      verified: true,
+      description_md: '**PREMIUM FEATURED LISTING - Oceanfront Paradise**\n\nExperience the ultimate luxury lifestyle in this stunning 4BR/3BA oceanfront villa. Panoramic Pacific views, infinity pool, and resort-style amenities make this the perfect Guanacaste retreat.\n\n*Premium Features:*\n- Direct beach access\n- Infinity pool with ocean views\n- Gourmet kitchen with top appliances\n- 3-car garage\n- Home theater\n- Wine cellar\n- Smart home automation\n- 24/7 security\n\n*Location Benefits:*\n- Walking distance to Tamarindo town center\n- Near world-class restaurants and shopping\n- International airport access (30 min)\n\n*Investment Potential:*\n- High rental demand from tourists\n- Strong appreciation in Tamarindo market\n- Turnkey investment opportunity'
+    },
+    {
+      title: 'Championship Golf Course Estate - Playa Grande',
+      type: 'house',
+      price_numeric: 1850000,
+      town: 'Playa Grande',
+      lat: 10.327,
+      lng: -85.854,
+      beds: 5,
+      baths: 4,
+      area_m2: 450,
+      lot_m2: 2000,
+      featured: true,
+      verified: true,
+      description_md: '**PREMIUM FEATURED LISTING - Golf Course Luxury**\n\nMagnificent 5BR/4BA estate overlooking the championship golf course in exclusive Playa Grande. This resort-style home offers unparalleled luxury living with championship golf views.\n\n*Premium Features:*\n- Championship golf course views\n- Resort-style pool and spa\n- Home gym and sauna\n- Gourmet kitchen with professional appliances\n- Wine tasting room\n- 4-car garage\n- Guest casita\n- Smart irrigation system\n\n*Resort Amenities:*\n- 24/7 gated security\n- Tennis courts\n- Fitness center access\n- Beach club membership\n- Concierge services\n\n*Prime Location:*\n- Guarded community\n- Minutes from pristine beaches\n- Near Tamarindo and Flamingo'
+    },
+    {
+      title: 'Marinafront Penthouse - Playa Flamingo',
+      type: 'condo',
+      price_numeric: 895000,
+      town: 'Playa Flamingo',
+      lat: 10.428,
+      lng: -85.785,
+      beds: 3,
+      baths: 3,
+      area_m2: 220,
+      featured: true,
+      verified: true,
+      description_md: '**PREMIUM FEATURED LISTING - Marina Luxury Living**\n\nSpectacular 3BR/3BA marina penthouse with breathtaking water views and resort amenities. Experience the pinnacle of Flamingo luxury living.\n\n*Premium Features:*\n- Private marina with boat dock\n- Floor-to-ceiling glass windows\n- Italian marble floors\n- Gourmet kitchen with Sub-Zero appliances\n- Master suite with spa bathroom\n- Private elevator\n- Rooftop terrace with jacuzzi\n- 2-car private garage\n\n*Resort Lifestyle:*\n- 5-star hotel amenities\n- World-class spa access\n- Multiple restaurants\n- Beach club\n- Water sports center\n- Kids club\n\n*Investment Value:*\n- Strong rental income potential\n- Appreciating Flamingo market\n- International buyer appeal'
+    },
+
+    // FREE LISTINGS (Standard listings without premium features)
+    {
+      title: 'Charming Tamarindo Beach Cottage',
+      type: 'house',
+      price_numeric: 425000,
+      town: 'Tamarindo',
+      lat: 10.301,
+      lng: -85.841,
+      beds: 2,
+      baths: 2,
+      area_m2: 120,
+      lot_m2: 300,
+      featured: false,
+      verified: true,
+      description_md: '**FREE LISTING - Tamarindo Beach Cottage**\n\nAdorable 2BR/2BA beach cottage in the heart of Tamarindo. Perfect for first-time buyers or investors looking for a charming property in Costa Rica\'s most popular beach town.\n\n*Features:*\n- Walking distance to beach\n- Central Tamarindo location\n- Tropical garden\n- Updated kitchen\n- Community feel\n\n*Location:*\n- Near restaurants and shops\n- Short walk to surf schools\n- Close to Tamarindo Airport\n\n*Perfect For:*\n- First-time Costa Rica buyers\n- Vacation rental investment\n- Year-round living'
+    },
+    {
+      title: 'Nosara Yoga Retreat Property',
+      type: 'house',
+      price_numeric: 675000,
+      town: 'Nosara',
+      lat: 9.981,
+      lng: -85.654,
+      beds: 3,
+      baths: 2,
+      area_m2: 180,
+      lot_m2: 800,
+      featured: false,
+      verified: true,
+      description_md: '**FREE LISTING - Nosara Wellness Property**\n\nPeaceful 3BR/2BA home in the heart of Nosara\'s spiritual community. Surrounded by nature with easy access to yoga studios, organic cafes, and world-class surfing.\n\n*Features:*\n- Meditation garden\n- Open floor plan\n- Natural light throughout\n- Mature fruit trees\n- Walking distance to beach\n\n*Nosara Lifestyle:*\n- Yoga and wellness community\n- Organic and healthy living\n- Surfing paradise\n- Nature trails\n- International vibe\n\n*Investment Potential:*\n- Growing wellness tourism\n- Strong expat community\n- Rental demand from yogis and surfers'
+    },
+    {
+      title: 'Sámara Bay View Home',
+      type: 'house',
+      price_numeric: 385000,
+      town: 'Sámara',
+      lat: 9.882,
+      lng: -85.527,
+      beds: 2,
+      baths: 1,
+      area_m2: 95,
+      lot_m2: 250,
+      featured: false,
+      verified: false,
+      description_md: '**FREE LISTING - Sámara Bay Property**\n\nCharming 2BR/1BA home with beautiful bay views in laid-back Sámara. Perfect for those seeking the quintessential Costa Rican beach town experience.\n\n*Features:*\n- Bay views from living room\n- Short walk to beach\n- Tropical landscaping\n- Open kitchen design\n- Hammock-ready porch\n\n*Sámara Lifestyle:*\n- Laid-back beach town vibe\n- Great for families\n- Walking town center\n- Surfing and water sports\n- International community\n\n*Why Sámara:*\n- Safe and family-friendly\n- No high-rises allowed\n- Preserved natural beauty\n- Strong sense of community'
+    },
+
+    // MIXED LISTINGS (Some featured, some free)
+    {
+      title: 'Liberia Family Home',
+      type: 'house',
+      price_numeric: 295000,
+      town: 'Liberia',
+      lat: 10.634,
+      lng: -85.437,
+      beds: 3,
+      baths: 2,
+      area_m2: 140,
+      lot_m2: 500,
+      featured: false,
+      verified: true,
+      description_md: '**FREE LISTING - Liberia Suburban Home**\n\nComfortable 3BR/2BA family home in Liberia\'s growing suburbs. Excellent value with proximity to the international airport and modern amenities.\n\n*Features:*\n- Spacious family rooms\n- Modern kitchen\n- Private backyard\n- 2-car carport\n- Mature landscaping\n\n*Location Benefits:*\n- 15 minutes to airport\n- Near schools and shopping\n- Growing suburban area\n- Easy access to beaches\n\n*Perfect For:*\n- Families relocating to Costa Rica\n- Airport accessibility\n- First-time homebuyers\n- Investment properties'
+    },
+    {
+      title: 'Conchal Ocean View Condo',
+      type: 'condo',
+      price_numeric: 525000,
+      town: 'Playa Conchal',
+      lat: 10.395,
+      lng: -85.695,
+      beds: 2,
+      baths: 2,
+      area_m2: 110,
+      featured: true,
+      verified: true,
+      description_md: '**PREMIUM FEATURED LISTING - Conchal Luxury**\n\nElegant 2BR/2BA ocean view condo in exclusive Playa Conchal. Powder-soft beaches and resort amenities make this a true paradise destination.\n\n*Premium Features:*\n- Direct ocean views\n- Powder sand beach access\n- Resort pool and spa\n- Fitness center\n- Restaurant and bar\n- 24/7 security\n- Concierge services\n\n*Conchal Lifestyle:*\n- World-famous beach\n- Luxury resort living\n- International community\n- Water sports paradise\n- Fine dining options\n\n*Investment Value:*\n- Premium beach location\n- Strong rental potential\n- Limited inventory\n- Appreciating market'
+    },
+    {
+      title: 'Development Land - Brasilito',
+      type: 'lot',
+      price_numeric: 165000,
+      town: 'Brasilito',
+      lat: 10.395,
+      lng: -85.745,
+      lot_m2: 800,
+      featured: false,
+      verified: false,
+      description_md: '**FREE LISTING - Brasilito Development Land**\n\n800m² development parcel in up-and-coming Brasilito. Perfect for building your dream home or investment property in a growing beach community.\n\n*Land Features:*\n- Flat, buildable terrain\n- Utilities nearby\n- Ocean access road\n- Mature trees\n- Quiet location\n\n*Development Potential:*\n- Zoned for residential construction\n- Growing tourism area\n- Near beaches and town\n- Investment opportunity\n\n*Brasilito Growth:*\n- Emerging beach destination\n- New developments underway\n- International appeal\n- Strong appreciation potential'
+    }
+  ]
+
+  for (const property of sampleProperties) {
+    try {
+      const { data, error } = await supabase
+        .from('properties')
+        .insert({
+          owner_id: '00000000-0000-0000-0000-000000000000', // dummy admin ID
+          status: 'published',
+          title: property.title,
+          type: property.type,
+          price_numeric: property.price_numeric,
+          currency: 'USD',
+          town: property.town,
+          lat: property.lat,
+          lng: property.lng,
+          beds: property.beds || null,
+          baths: property.baths || null,
+          area_m2: property.area_m2 || null,
+          lot_m2: property.lot_m2 || null,
+          description_md: property.description_md,
+          featured: property.featured,
+          verified: property.verified,
+          is_demo: true,
+          published_at: new Date().toISOString()
+        })
+
+      if (error) {
+        console.error(`❌ Error adding property "${property.title}":`, error.message)
+      } else {
+        console.log(`✅ Added property: ${property.title} (${property.featured ? 'FEATURED' : 'FREE'})`)
+      }
+    } catch (error) {
+      console.error(`❌ Failed to add property "${property.title}":`, error)
+    }
+  }
+
+  console.log('🎉 Sample properties addition completed!')
+}
+
+addPropertiesDirect().catch(console.error)
