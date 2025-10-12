@@ -1,12 +1,29 @@
 {
+  "version": 2,
   "buildCommand": "cd apps/web && npm run build",
   "outputDirectory": "apps/web/dist",
   "installCommand": "npm install",
   "framework": null,
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "VITE_SUPABASE_URL": "https://edcrblaefapbynsmazdf.supabase.co",
+    "VITE_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkY3JibGFlZmFwYnluc21hemRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1MTQ0OTYsImV4cCI6MjA3NTA5MDQ5Nn0.9hT9LZnWCV7CHzUkNJ_GPIulpPSz0rvuRdI506f4JNI",
+    "SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkY3JibGFlZmFwYnluc21hemRmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTUxNDQ5NiwiZXhwIjoyMDc1MDkwNDk2fQ.etJr9jI5-y5Lxo82RnOCr_Woikt5G9CE5rVskTaUqG0",
+    "MAPBOX_ACCESS_TOKEN": "pk.eyJ1IjoicGVlbWFpbCIsImEiOiJjbWUydmVncWQwMG03Mm5wdzU3b3M3Zjg1In0.hNHu7VN1E7sUBXv3DM3Lfw"
+  }
 }

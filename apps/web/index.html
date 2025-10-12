@@ -3,11 +3,80 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/house-icon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Guanacaste Real</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
+
+    <!-- Theme Colors -->
+    <meta name="theme-color" content="#0ea5e9" />
+    <meta name="msapplication-TileColor" content="#0ea5e9" />
+    <meta name="color-scheme" content="light dark" />
+
+    <!-- SEO and Social -->
+    <title>Guanacaste Real Estate - Premium Properties in Costa Rica</title>
+    <meta name="description" content="Find your dream property in Guanacaste, Costa Rica. AI-powered real estate platform with expert guidance, virtual tours, and premium listings." />
+    <meta name="keywords" content="real estate, Costa Rica, Guanacaste, properties, villas, condos, beachfront, investment" />
+    <meta name="author" content="Guanacaste Real" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Guanacaste Real Estate - Premium Properties in Costa Rica" />
+    <meta property="og:description" content="Find your dream property in Guanacaste, Costa Rica. AI-powered real estate platform with expert guidance." />
+    <meta property="og:image" content="/og-image.jpg" />
+    <meta property="og:url" content="https://guanacaste-real.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Guanacaste Real" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Guanacaste Real Estate - Premium Properties in Costa Rica" />
+    <meta name="twitter:description" content="Find your dream property in Guanacaste, Costa Rica. AI-powered real estate platform." />
+    <meta name="twitter:image" content="/twitter-image.jpg" />
+
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+
+    <!-- DNS prefetch -->
+    <link rel="dns-prefetch" href="//api.guanacaste-real.com" />
+    <link rel="dns-prefetch" href="//supabase.co" />
+
+    <!-- Security headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+
+    <!-- Performance hints -->
+    <link rel="modulepreload" href="/src/main.tsx" />
+    <link rel="preload" href="/house-icon.svg" as="image" type="image/svg+xml" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://guanacaste-real.com" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+              console.log('SW registered: ', registration);
+            })
+            .catch(function(registrationError) {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
   </body>
 </html>

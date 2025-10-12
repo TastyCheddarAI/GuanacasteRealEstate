@@ -13,12 +13,55 @@
     "build:packages": "mkdir -p apps/web/packages && cp -r packages/* apps/web/packages/",
     "build:web": "npm run build --workspace=apps/web",
     "build:monorepo": "npm install && npm run build:packages && npm run build:web",
+    "build:docker": "docker build --target runtime -t guanacaste-real:latest .",
     "lint": "npm run lint --workspace=apps/web",
     "type-check": "npm run type-check --workspace=apps/web",
-    "deploy": "npm run build:monorepo && npm run deploy:vercel",
-    "deploy:vercel": "cd apps/web && vercel --prod"
+
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "npm run test:unit --workspace=apps/web",
+    "test:integration": "npm run test:integration --workspace=apps/web",
+    "test:e2e": "npm run test:e2e --workspace=apps/web",
+    "test:ci": "npm run test:unit && npm run test:integration -- --coverage",
+    "test:performance": "tsx scripts/test-performance-monitoring.ts && tsx scripts/test-database-optimization.ts",
+
+    "security:audit": "npm audit --audit-level moderate",
+    "security:scan": "trivy fs --format json --output security-report.json .",
+    "security:deps": "npm run security:audit && npm run security:scan",
+
+    "deploy": "npm run build:monorepo && npm run deploy:production",
+    "deploy:staging": "bash scripts/deploy.sh staging",
+    "deploy:production": "bash scripts/deploy.sh production",
+    "deploy:rollback": "bash scripts/deploy.sh production --rollback",
+    "deploy:vercel": "cd apps/web && vercel --prod",
+
+    "docker:build": "docker build --target runtime -t guanacaste-real:latest .",
+    "docker:run": "docker run -p 3000:3000 guanacaste-real:latest",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+
+    "db:migrate": "supabase db push",
+    "db:seed": "tsx scripts/seed-mock-properties.ts",
+    "db:reset": "supabase db reset",
+    "db:backup": "supabase db dump > backup.sql",
+
+    "monitoring:up": "docker-compose -f docker-compose.monitoring.yml up -d",
+    "monitoring:down": "docker-compose -f docker-compose.monitoring.yml down",
+
+    "health:check": "curl -f http://localhost:3000/api/health",
+    "health:ready": "curl -f http://localhost:3000/api/health/ready",
+    "health:metrics": "curl -f http://localhost:3000/api/health/metrics",
+
+    "ingest:properties": "tsx scripts/ingest-properties.ts",
+    "ingest:kb": "tsx scripts/ingest-content.ts",
+    "seed:properties": "npm run ingest:properties",
+    "seed:kb": "npm run ingest:kb",
+
+    "start": "npm run start --workspace=apps/web",
+    "start:prod": "npm run build && npm run start"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.0",
     "eslint": "^8.57.0",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
@@ -29,6 +72,7 @@
     "@types/pg": "^8.15.5",
     "dotenv": "^17.2.3",
     "gray-matter": "^4.0.3",
+    "openai": "^6.2.0",
     "pg": "^8.16.3"
   }
 }

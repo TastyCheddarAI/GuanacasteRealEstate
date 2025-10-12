@@ -12,9 +12,11 @@ const client = new Client({
   database: 'postgres'
 });
 
-// Simple mock embedding function for development
+// Embedding function (mock for now, will be replaced with real OpenAI when API key is available)
 async function embed(text: string): Promise<number[]> {
-  // Return a mock embedding vector of 1536 dimensions (same as text-embedding-3-small)
+  // Using mock embeddings for beta testing
+  // TODO: Replace with real OpenAI embeddings when API key is configured
+  console.log(`Generating mock embedding for: "${text.substring(0, 50)}..."`);
   return Array.from({ length: 1536 }, () => Math.random() - 0.5);
 }
 

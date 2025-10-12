@@ -8,58 +8,11 @@ import fs from 'fs'
 export default defineConfig({
   plugins: [
     react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/api\./i,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'api-cache',
-            },
-          },
-          {
-            urlPattern: /\/listings\//,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'listings-cache',
-            },
-          },
-        ],
-      },
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
-      manifest: {
-        name: 'Guanacaste Real',
-        short_name: 'GuanacasteReal',
-        description: 'Real estate platform for Guanacaste',
-        theme_color: '#ffffff',
-        background_color: '#ffffff',
-        display: 'standalone',
-        icons: [
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-          },
-        ],
-      },
-    }),
   ],
   resolve: {
     alias: {
-      '@guanacaste-real/ui': fs.existsSync(path.resolve(__dirname, './packages/ui'))
-        ? path.resolve(__dirname, './packages/ui')
-        : path.resolve(__dirname, '../../packages/ui'),
-      '@guanacaste-real/lib': fs.existsSync(path.resolve(__dirname, './packages/lib'))
-        ? path.resolve(__dirname, './packages/lib')
-        : path.resolve(__dirname, '../../packages/lib'),
+      '@guanacaste-real/ui': path.resolve(__dirname, './src/components/ui'),
+      '@guanacaste-real/lib': path.resolve(__dirname, './src/lib'),
     },
   },
 })

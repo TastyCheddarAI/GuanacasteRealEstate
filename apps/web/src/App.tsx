@@ -44,58 +44,58 @@ function App() {
     <HelmetProvider>
       <AuthProvider>
         <BrowserRouter>
-          <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<HomeRoute />} />
-              <Route path="home" element={<HomeRoute />} />
-              <Route path="list" element={<ListProperty />} />
-              <Route path="free-listings" element={<FreeListings />} />
-              <Route path="property/:id" element={<PropertyDetail />} />
-              <Route path="seller-dashboard" element={<SellerDashboard />} />
-              <Route path="search" element={<SearchResults />} />
-              <Route path="messages" element={<Messages />} />
-              <Route path="saved" element={<SavedProperties />} />
-              <Route path="buying-process" element={<BuyingProcess />} />
-              <Route path="legal-guide" element={<LegalGuide />} />
-              <Route path="tamarindo" element={<Tamarindo />} />
-              <Route path="nosara" element={<Nosara />} />
-              <Route path="flamingo" element={<Flamingo />} />
-              <Route path="playa-grande" element={<PlayaGrande />} />
-              <Route path="samara" element={<Samara />} />
-              <Route path="explore" element={<Explore />} />
-              <Route path="auth" element={<Auth />} />
-              <Route path="login" element={<LoginPage />} />
-              <Route path="signup" element={<SignupPage />} />
-              <Route path="profile" element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              } />
-              <Route path="user-dashboard" element={
-                <BuyerProtectedRoute>
-                  <UserDashboard />
-                </BuyerProtectedRoute>
-              } />
-              <Route path="realtor-dashboard" element={
-                <RealtorProtectedRoute>
-                  <RealtorDashboard />
-                </RealtorProtectedRoute>
-              } />
-              <Route path="admin-dashboard" element={
-                <AdminProtectedRoute>
-                  <AdminDashboard />
-                </AdminProtectedRoute>
-              } />
-              <Route path="resources" element={<Resources />} />
-              <Route path="knowledge-base" element={<KnowledgeBase />} />
-              <Route path="costa-rica-laws" element={<CostaRicaLaws />} />
-              <Route path="title-types" element={<TitleTypes />} />
-              <Route path="due-diligence" element={<DueDiligence />} />
-              <Route path="blog" element={<Blog />} />
-              <Route path="owner-featured/:id" element={<OwnerFeaturedPropertyDetail />} />
-            </Route>
-          </Routes>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<HomeRoute />} />
+            <Route path="home" element={<HomeRoute />} />
+            <Route path="list" element={<ListProperty />} />
+            <Route path="free-listings" element={<FreeListings />} />
+            <Route path="property/:id" element={<PropertyDetail />} />
+            <Route path="seller-dashboard" element={<SellerDashboard />} />
+            <Route path="search" element={<SearchResults />} />
+            <Route path="messages" element={<Messages />} />
+            <Route path="saved" element={<SavedProperties />} />
+            <Route path="buying-process" element={<BuyingProcess />} />
+            <Route path="legal-guide" element={<LegalGuide />} />
+            <Route path="tamarindo" element={<Tamarindo />} />
+            <Route path="nosara" element={<Nosara />} />
+            <Route path="flamingo" element={<Flamingo />} />
+            <Route path="playa-grande" element={<PlayaGrande />} />
+            <Route path="samara" element={<Samara />} />
+            <Route path="explore" element={<Explore />} />
+            <Route path="auth" element={<Auth />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="signup" element={<SignupPage />} />
+            <Route path="profile" element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            } />
+            <Route path="user-dashboard" element={
+              <BuyerProtectedRoute>
+                <UserDashboard />
+              </BuyerProtectedRoute>
+            } />
+            <Route path="realtor-dashboard" element={
+              <RealtorProtectedRoute>
+                <RealtorDashboard />
+              </RealtorProtectedRoute>
+            } />
+            <Route path="admin-dashboard" element={
+              <AdminProtectedRoute>
+                <AdminDashboard />
+              </AdminProtectedRoute>
+            } />
+            <Route path="resources" element={<Resources />} />
+            <Route path="knowledge-base" element={<KnowledgeBase />} />
+            <Route path="costa-rica-laws" element={<CostaRicaLaws />} />
+            <Route path="title-types" element={<TitleTypes />} />
+            <Route path="due-diligence" element={<DueDiligence />} />
+            <Route path="blog" element={<Blog />} />
+            <Route path="owner-featured/:id" element={<OwnerFeaturedPropertyDetail />} />
+          </Route>
+        </Routes>
         </BrowserRouter>
       </AuthProvider>
     </HelmetProvider>

@@ -1,0 +1,208 @@
+# Prometheus Alert Rules for Guanacaste Real Estate Platform
+# Production-ready alerting rules for system monitoring
+
+groups:
+  - name: guanacaste_application_alerts
+    rules:
+      # Application Health Alerts
+      - alert: ApplicationDown
+        expr: up{job="guanacaste-web"} == 0
+        for: 5m
+        labels:
+          severity: critical
+          service: web
+        annotations:
+          summary: "Application is down"
+          description: "Guanacaste Real Estate application has been down for more than 5 minutes."
+
+      - alert: ApplicationHighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+          service: web
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | printf \"%.2f\" }}% over the last 5 minutes."
+
+      - alert: ApplicationSlowResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 5
+        for: 5m
+        labels:
+          severity: warning
+          service: web
+        annotations:
+          summary: "Slow response times detected"
+          description: "95th percentile response time is {{ $value | printf \"%.2f\" }}s over the last 5 minutes."
+
+      # Database Alerts
+      - alert: DatabaseConnectionPoolExhausted
+        expr: db_connections_active / db_connections_max > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "Database connection pool nearly exhausted"
+          description: "Database connection pool usage is at {{ $value | printf \"%.1f\" }}%."
+
+      - alert: DatabaseSlowQueries
+        expr: rate(db_query_duration_seconds{quantile="0.95"}[5m]) > 2
+        for: 10m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "Slow database queries detected"
+          description: "95th percentile query time is {{ $value | printf \"%.2f\" }}s."
+
+      # Cache Alerts
+      - alert: CacheHighMissRate
+        expr: rate(cache_misses_total[5m]) / (rate(cache_hits_total[5m]) + rate(cache_misses_total[5m])) > 0.3
+        for: 10m
+        labels:
+          severity: warning
+          service: cache
+        annotations:
+          summary: "High cache miss rate"
+          description: "Cache miss rate is {{ $value | printf \"%.1f\" }}% over the last 5 minutes."
+
+      - alert: RedisMemoryHigh
+        expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: redis
+        annotations:
+          summary: "Redis memory usage high"
+          description: "Redis memory usage is {{ $value | printf \"%.1f\" }}% of maximum."
+
+      # System Resource Alerts
+      - alert: HighMemoryUsage
+        expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | printf \"%.1f\" }}%."
+
+      - alert: HighCPUUsage
+        expr: rate(node_cpu_seconds_total{mode!="idle"}[5m]) / rate(node_cpu_seconds_total[5m]) > 0.9
+        for: 10m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value | printf \"%.1f\" }}%."
+
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.1
+        for: 5m
+        labels:
+          severity: critical
+          service: system
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Disk space available is {{ $value | printf \"%.1f\" }}%."
+
+      # Network Alerts
+      - alert: HighNetworkErrors
+        expr: rate(node_network_receive_errs_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          service: network
+        annotations:
+          summary: "High network error rate"
+          description: "Network receive errors: {{ $value | printf \"%.0f\" }}/s."
+
+      # Security Alerts
+      - alert: SuspiciousLoginAttempts
+        expr: rate(login_attempts_total{status="failed"}[5m]) > 5
+        for: 5m
+        labels:
+          severity: warning
+          service: security
+        annotations:
+          summary: "High rate of failed login attempts"
+          description: "Failed login attempts: {{ $value | printf \"%.1f\" }}/s."
+
+      - alert: RateLimitExceeded
+        expr: rate(rate_limit_exceeded_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: info
+          service: security
+        annotations:
+          summary: "Rate limits being exceeded"
+          description: "Rate limit violations: {{ $value | printf \"%.1f\" }}/s."
+
+  - name: guanacaste_infrastructure_alerts
+    rules:
+      # Container Health
+      - alert: ContainerDown
+        expr: up{job=~"guanacaste-.*"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: infrastructure
+        annotations:
+          summary: "Container {{ $labels.job }} is down"
+          description: "Container {{ $labels.job }} has been down for more than 2 minutes."
+
+      - alert: ContainerRestarting
+        expr: rate(container_last_seen[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "Container {{ $labels.name }} is restarting"
+          description: "Container {{ $labels.name }} has restarted {{ $value | printf \"%.0f\" }} times in the last 5 minutes."
+
+      # Docker Health
+      - alert: DockerDaemonDown
+        expr: up{job="docker"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: infrastructure
+        annotations:
+          summary: "Docker daemon is down"
+          description: "Docker daemon has been unreachable for more than 2 minutes."
+
+  - name: guanacaste_business_alerts
+    rules:
+      # Business Logic Alerts
+      - alert: LowPropertyInventory
+        expr: property_count < 10
+        for: 1h
+        labels:
+          severity: warning
+          service: business
+        annotations:
+          summary: "Low property inventory"
+          description: "Only {{ $value }} properties are currently listed."
+
+      - alert: HighLeadConversionTime
+        expr: histogram_quantile(0.95, rate(lead_response_time_seconds_bucket[1h])) > 3600
+        for: 1h
+        labels:
+          severity: info
+          service: business
+        annotations:
+          summary: "Slow lead response times"
+          description: "95th percentile lead response time is {{ $value | printf \"%.0f\" }} seconds."
+
+      - alert: UnusualTrafficSpike
+        expr: rate(http_requests_total[5m]) > rate(http_requests_total[1h]) * 3
+        for: 5m
+        labels:
+          severity: info
+          service: business
+        annotations:
+          summary: "Unusual traffic spike detected"
+          description: "Traffic has increased by {{ $value | printf \"%.1f\" }}x in the last 5 minutes."

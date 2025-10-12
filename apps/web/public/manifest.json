@@ -1,16 +1,106 @@
 {
-  "name": "Guanacaste Real",
+  "name": "Guanacaste Real Estate",
   "short_name": "GuanacasteReal",
-  "description": "Real estate platform for Guanacaste",
+  "description": "Premium real estate platform for Guanacaste, Costa Rica. Find your dream property with AI-powered search and expert guidance.",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": ["business", "finance", "lifestyle", "productivity"],
+  "screenshots": [
+    {
+      "src": "/screenshots/mobile-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile home screen"
+    },
+    {
+      "src": "/screenshots/desktop-property.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Desktop property details"
+    }
+  ],
   "icons": [
     {
       "src": "/house-icon.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Search Properties",
+      "short_name": "Search",
+      "description": "Search for properties in Guanacaste",
+      "url": "/search",
+      "icons": [
+        {
+          "src": "/icons/search-shortcut.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Saved Properties",
+      "short_name": "Saved",
+      "description": "View your saved properties",
+      "url": "/saved",
+      "icons": [
+        {
+          "src": "/icons/saved-shortcut.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "AI Assistant",
+      "short_name": "AI Help",
+      "description": "Get AI-powered property assistance",
+      "url": "/ai-assistant",
+      "icons": [
+        {
+          "src": "/icons/ai-shortcut.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "file_handlers": [],
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "protocol_handlers": [],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "files",
+          "accept": ["image/*", "video/*", ".pdf"]
+        }
+      ]
+    }
+  },
+  "version": "2.1.0",
+  "last_updated": "2024-12-12"
 }
