@@ -175,10 +175,19 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
     <div className="min-h-screen bg-slate-50">
       {/* Premium Hero Section */}
       <div className="relative">
-        {/* Priority Placement Badge */}
-        <div className="absolute top-4 left-4 z-20 bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-2">
-          <Crown className="w-4 h-4" />
-          OWNER FEATURED - PRIORITY PLACEMENT
+        {/* Responsive Badge Container */}
+        <div className="absolute top-4 left-4 right-4 z-20 flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-start">
+          {/* Priority Placement Badge */}
+          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-2 self-start">
+            <Crown className="w-4 h-4" />
+            OWNER FEATURED - PRIORITY PLACEMENT
+          </div>
+
+          {/* Enhanced Price Badge */}
+          <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-3 rounded-xl font-bold text-2xl shadow-lg self-end sm:self-start">
+            ${property.price.toLocaleString()} USD
+            <div className="text-sm font-normal opacity-90">Owner Featured</div>
+          </div>
         </div>
 
         {/* Image Gallery */}
@@ -240,7 +249,7 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
           </div>
 
           {/* Enhanced Thumbnail Strip */}
-          <div className="absolute bottom-4 left-4 flex gap-2 overflow-x-auto max-w-96">
+          <div className="absolute bottom-4 left-4 flex gap-2 overflow-x-auto max-w-[calc(100vw-2rem)] sm:max-w-96">
             {property.images.slice(0, 6).map((img, index) => (
               <button
                 key={index}
@@ -289,12 +298,6 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
               <Download className="w-7 h-7 text-white" />
             </button>
           </div>
-
-          {/* Enhanced Price Badge */}
-          <div className="absolute top-4 left-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-6 py-3 rounded-xl font-bold text-2xl shadow-lg">
-            ${property.price.toLocaleString()} USD
-            <div className="text-sm font-normal opacity-90">Owner Featured</div>
-          </div>
         </div>
       </div>
 
@@ -321,7 +324,7 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
               </div>
 
               {/* Enhanced Key Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-6">
                 <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 shadow-sm border border-blue-200">
                   <Bed className="w-8 h-8 text-blue-600 mb-3" />
                   <div className="text-3xl font-bold text-slate-900">{property.beds}</div>
@@ -359,7 +362,7 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
                     View Dashboard
                   </Button>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-cyan-300">{property.analytics.views}</div>
                     <div className="text-xs text-slate-300">Total Views</div>
@@ -413,14 +416,14 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
                   <div className="space-y-8">
                     <div>
                       <h3 className="text-2xl font-bold text-slate-900 mb-4">Premium Property Description</h3>
-                      <div className="text-slate-700 leading-relaxed whitespace-pre-line text-lg">
+                      <div className="text-slate-700 leading-relaxed whitespace-pre-line text-lg break-words">
                         {property.description}
                       </div>
                     </div>
 
                     <div>
                       <h3 className="text-2xl font-bold text-slate-900 mb-4">Premium Features & Amenities</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {property.features.map((feature, index) => (
                           <div key={index} className="flex items-center gap-3 text-slate-700 bg-slate-50 rounded-xl p-4">
                             <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
@@ -455,7 +458,7 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
                   <div className="space-y-8">
                     <div>
                       <h3 className="text-2xl font-bold text-slate-900 mb-6">Comprehensive Property Details</h3>
-                      <div className="grid md:grid-cols-2 gap-8">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                         <div className="space-y-6">
                           <div className="flex justify-between items-center py-4 border-b border-slate-200">
                             <span className="text-slate-600 font-medium">Year Built</span>
@@ -497,7 +500,7 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
 
                     <div>
                       <h3 className="text-2xl font-bold text-slate-900 mb-6">Premium Utilities & Services</h3>
-                      <div className="grid md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div className="flex items-center gap-4 p-6 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl border border-blue-200">
                           <Waves className="w-8 h-8 text-blue-600" />
                           <div>
@@ -550,7 +553,7 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
 
                     <div>
                       <h3 className="text-2xl font-bold text-slate-900 mb-6">Premium Amenities & Attractions</h3>
-                      <div className="grid md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div className="flex items-center gap-4">
                           <Mountain className="w-6 h-6 text-slate-500" />
                           <span className="text-slate-700 text-lg">5 min walk to world-class beach</span>
@@ -596,7 +599,7 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
                           <CheckCircle className="w-8 h-8 text-green-600" />
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                           <div className="p-6 bg-slate-50 rounded-2xl border border-slate-200">
                             <div className="font-bold text-slate-900 mb-2 text-lg">Plano Catastrado</div>
                             <div className="text-slate-600 font-mono">{property.legal.planoCatastrado}</div>
@@ -676,7 +679,7 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
                       {/* Market Comparison */}
                       <div className="bg-gradient-to-r from-slate-50 to-gray-50 rounded-2xl p-6 border border-slate-200">
                         <h4 className="text-xl font-bold text-slate-900 mb-4">Market Position</h4>
-                        <div className="grid md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                           <div className="text-center">
                             <div className="text-2xl font-bold text-green-600 mb-1">
                               ${Math.round((property.price - analyticsData.competitorAnalysis.avgPrice) / 1000)}K
@@ -892,7 +895,7 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
 
             <div className="p-6 space-y-8">
               {/* Key Metrics */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                 <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200">
                   <Eye className="w-8 h-8 text-blue-600 mb-3" />
                   <div className="text-3xl font-bold text-slate-900">{property.analytics.views}</div>
@@ -920,7 +923,7 @@ This property is positioned in the top 5% of Tamarindo listings with a projected
               </div>
 
               {/* Charts Placeholder */}
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200">
                   <h4 className="text-lg font-bold text-slate-900 mb-4">Daily Views (Last 7 Days)</h4>
                   <div className="h-32 flex items-end justify-between gap-2">

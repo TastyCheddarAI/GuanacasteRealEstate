@@ -432,7 +432,7 @@ const GuanacasteRealEstate = () => {
             </div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
               {[
                 { label: 'Active Listings', value: '247', icon: Home },
                 { label: 'Verified Properties', value: '189', icon: Shield },

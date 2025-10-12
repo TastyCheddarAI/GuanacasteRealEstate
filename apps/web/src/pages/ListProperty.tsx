@@ -262,7 +262,7 @@ const FreeListingWizard = () => {
             </div>
 
             {formData.propertyType !== 'lot' && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-3">Bedrooms</label>
                   <input

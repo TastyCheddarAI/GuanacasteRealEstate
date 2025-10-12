@@ -279,7 +279,7 @@ const Nosara = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-12">
           <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 text-center">
             <Home className="w-8 h-8 text-green-600 mx-auto mb-3" />
             <div className="text-2xl font-bold text-slate-900">{marketStats.inventory}</div>

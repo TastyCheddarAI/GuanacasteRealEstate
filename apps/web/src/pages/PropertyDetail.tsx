@@ -194,7 +194,7 @@ const PropertyDetail = () => {
         </div>
 
         {/* Thumbnail Strip */}
-        <div className="absolute bottom-4 left-4 flex gap-2">
+        <div className="absolute bottom-4 left-4 flex gap-2 overflow-x-auto max-w-[calc(100vw-2rem)] sm:max-w-96">
           {property.images.slice(0, 5).map((img, index) => (
             <button
               key={index}
@@ -246,7 +246,7 @@ const PropertyDetail = () => {
               </div>
 
               {/* Key Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
                 <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
                   <Bed className="w-6 h-6 text-slate-500 mb-2" />
                   <div className="text-2xl font-bold text-slate-900">{property.beds}</div>
@@ -293,14 +293,14 @@ const PropertyDetail = () => {
                   <div className="space-y-6">
                     <div>
                       <h3 className="text-xl font-bold text-slate-900 mb-3">Description</h3>
-                      <div className="text-slate-700 leading-relaxed whitespace-pre-line">
+                      <div className="text-slate-700 leading-relaxed whitespace-pre-line break-words">
                         {property.description}
                       </div>
                     </div>
 
                     <div>
                       <h3 className="text-xl font-bold text-slate-900 mb-3">Features & Amenities</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         {property.features.map((feature, index) => (
                           <div key={index} className="flex items-center gap-2 text-slate-700">
                             <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
@@ -316,7 +316,7 @@ const PropertyDetail = () => {
                   <div className="space-y-6">
                     <div>
                       <h3 className="text-xl font-bold text-slate-900 mb-4">Property Details</h3>
-                      <div className="grid md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div className="space-y-4">
                           <div className="flex justify-between py-2 border-b border-slate-200">
                             <span className="text-slate-600">Year Built</span>
@@ -350,7 +350,7 @@ const PropertyDetail = () => {
 
                     <div>
                       <h3 className="text-xl font-bold text-slate-900 mb-4">Utilities</h3>
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
                           <Waves className="w-6 h-6 text-blue-500" />
                           <div>
@@ -414,7 +414,7 @@ const PropertyDetail = () => {
 
                     <div>
                       <h3 className="text-xl font-bold text-slate-900 mb-3">Nearby Amenities</h3>
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="flex items-center gap-3">
                           <Mountain className="w-5 h-5 text-slate-500" />
                           <span className="text-slate-700">5 min walk to beach</span>
@@ -452,7 +452,7 @@ const PropertyDetail = () => {
                           <Check className="w-5 h-5 text-green-600" />
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div className="p-4 bg-slate-50 rounded-xl">
                             <div className="font-semibold text-slate-900 mb-1">Plano Catastrado</div>
                             <div className="text-sm text-slate-600">{property.legal.planoCatastrado}</div>
@@ -481,7 +481,7 @@ const PropertyDetail = () => {
             {/* Similar Properties */}
             <div>
               <h3 className="text-2xl font-bold text-slate-900 mb-6">Similar Properties</h3>
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {similarProperties.map((similar) => (
                   <div key={similar.id} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer">
                     <div className="h-48 bg-slate-200">
