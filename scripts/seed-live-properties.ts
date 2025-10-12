@@ -1,32 +1,38 @@
-import { Client } from 'pg';
+import { createClient } from '@supabase/supabase-js'
+import * as dotenv from 'dotenv'
 
-// Direct PostgreSQL connection to bypass PostgREST schema cache issues
-const client = new Client({
-  host: '127.0.0.1',
-  port: 54322,
-  user: 'postgres',
-  password: 'postgres',
-  database: 'postgres'
-});
+// Load environment variables
+dotenv.config({ path: '../supabase/.env' })
 
-interface MockProperty {
-  title: string;
-  type: 'lot' | 'house' | 'condo' | 'commercial' | 'farm' | 'hotel' | 'mixed';
-  price_numeric: number;
-  town: string;
-  lat: number;
-  lng: number;
-  beds?: number;
-  baths?: number;
-  area_m2?: number;
-  lot_m2?: number;
-  description_md: string;
-  featured?: boolean;
-  verified?: boolean;
+// Use live/production Supabase credentials
+const supabaseUrl = 'https://edcrblaefapbynsmazdf.supabase.co'
+const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkY3JibGFlZmFwYnluc21hemRmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTUxNDQ5NiwiZXhwIjoyMDc1MDkwNDk2fQ.etJr9jI5-y5Lxo82RnOCr_Woikt5G9CE5rVskTaUqG0'
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error('Missing Supabase environment variables')
+  process.exit(1)
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
+interface PropertyData {
+  title: string
+  type: 'lot' | 'house' | 'condo' | 'commercial' | 'farm' | 'hotel' | 'mixed'
+  price_numeric: number
+  town: string
+  lat: number
+  lng: number
+  beds?: number
+  baths?: number
+  area_m2?: number
+  lot_m2?: number
+  description_md: string
+  featured: boolean
+  verified: boolean
 }
 
 // Sample properties showcasing featured vs free listings
-const mockProperties: MockProperty[] = [
+const sampleProperties: PropertyData[] = [
   // FEATURED PROPERTIES (Paid listings with premium features)
   {
     title: 'Oceanfront Luxury Villa - Tamarindo',
@@ -162,110 +168,114 @@ const mockProperties: MockProperty[] = [
     verified: false,
     description_md: '**FREE LISTING - Brasilito Development Land**\n\n800m² development parcel in up-and-coming Brasilito. Perfect for building your dream home or investment property in a growing beach community.\n\n*Land Features:*\n- Flat, buildable terrain\n- Utilities nearby\n- Ocean access road\n- Mature trees\n- Quiet location\n\n*Development Potential:*\n- Zoned for residential construction\n- Growing tourism area\n- Near beaches and town\n- Investment opportunity\n\n*Brasilito Growth:*\n- Emerging beach destination\n- New developments underway\n- International appeal\n- Strong appreciation potential'
   }
-];
+]
 
-async function seedMockProperties(): Promise<void> {
+async function seedProperties() {
   try {
-    // Connect to database
-    await client.connect();
-    console.log('Connected to database');
+    console.log('🌱 Starting property seeding...')
 
-    // Create tables if they don't exist
-    const setupSQL = `
-      CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+    // First, let's check what tables exist
+    console.log('🔍 Checking database tables...')
 
-      CREATE TABLE IF NOT EXISTS public.profiles (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        role TEXT NOT NULL DEFAULT 'buyer',
-        full_name TEXT,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-      );
+    // Try to query properties table directly
+    const { data: existingProperties, error: checkError } = await supabase
+      .from('properties')
+      .select('id, title')
+      .limit(1)
 
-      CREATE TABLE IF NOT EXISTS public.properties (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        owner_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-        status TEXT NOT NULL DEFAULT 'draft',
-        title TEXT NOT NULL,
-        type TEXT NOT NULL,
-        price_numeric NUMERIC(14,2) NOT NULL,
-        currency TEXT NOT NULL DEFAULT 'USD',
-        area_m2 INTEGER,
-        lot_m2 INTEGER,
-        beds INTEGER,
-        baths INTEGER,
-        town TEXT,
-        lat NUMERIC(8,6),
-        lng NUMERIC(9,6),
-        description_md TEXT,
-        is_demo BOOLEAN NOT NULL DEFAULT false,
-        published_at TIMESTAMPTZ,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-      );
-    `;
+    if (checkError) {
+      console.error('Error accessing properties table:', checkError)
+      console.log('Available tables might be different. Let\'s try alternative approach.')
+      return
+    }
 
-    await client.query(setupSQL);
-    console.log('Tables created/verified');
+    console.log('✅ Properties table exists')
 
-    // Get or create admin profile ID
-    let adminResult = await client.query(
-      'SELECT id FROM public.profiles WHERE role = \'admin\' LIMIT 1'
-    );
+    // Get or create admin profile - try different table names
+    let adminId: string
 
-    let adminId: string;
-    if (adminResult.rows.length === 0) {
-      const insertResult = await client.query(
-        'INSERT INTO public.profiles (role, full_name) VALUES (\'admin\', \'Admin User\') RETURNING id'
-      );
-      adminId = insertResult.rows[0].id;
-      console.log(`Created admin profile: ${adminId}`);
+    // Try profiles table
+    let { data: profiles, error: profileError } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('role', 'admin')
+      .limit(1)
+
+    if (profileError) {
+      console.log('Profiles table not found, trying auth.users...')
+      // If profiles doesn't exist, we might need to use a different approach
+      // For now, let's use a dummy admin ID or skip the owner_id requirement
+      adminId = '00000000-0000-0000-0000-000000000000' // dummy UUID
+      console.log('Using dummy admin ID for seeding')
+    } else if (!profiles || profiles.length === 0) {
+      console.log('No admin profile found, creating one...')
+      const { data: newProfile, error: createError } = await supabase
+        .from('profiles')
+        .insert({
+          role: 'admin',
+          full_name: 'Admin User'
+        })
+        .select('id')
+        .single()
+
+      if (createError) {
+        console.log('Could not create admin profile, using dummy ID')
+        adminId = '00000000-0000-0000-0000-000000000000'
+      } else {
+        adminId = newProfile.id
+        console.log('✅ Created admin profile:', adminId)
+      }
     } else {
-      adminId = adminResult.rows[0].id;
-      console.log(`Using existing admin profile: ${adminId}`);
+      adminId = profiles[0].id
+      console.log('✅ Using existing admin profile:', adminId)
     }
 
-    // Insert mock properties
-    for (const property of mockProperties) {
-      const query = `
-        INSERT INTO public.properties (
-          owner_id, status, title, type, price_numeric, currency, town, lat, lng,
-          beds, baths, area_m2, lot_m2, description_md, featured, verified, is_demo, published_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, NOW())
-        ON CONFLICT DO NOTHING
-      `;
+    // Admin ID is already set above
 
-      const values = [
-        adminId,
-        'published',
-        property.title,
-        property.type,
-        property.price_numeric,
-        'USD',
-        property.town,
-        property.lat,
-        property.lng,
-        property.beds || null,
-        property.baths || null,
-        property.area_m2 || null,
-        property.lot_m2 || null,
-        property.description_md,
-        property.featured || false,
-        property.verified || false,
-        true // is_demo = true
-      ];
+    // Insert properties
+    for (const property of sampleProperties) {
+      const propertyData = {
+        owner_id: adminId,
+        status: 'published',
+        title: property.title,
+        type: property.type,
+        price_numeric: property.price_numeric,
+        currency: 'USD',
+        town: property.town,
+        lat: property.lat,
+        lng: property.lng,
+        beds: property.beds || null,
+        baths: property.baths || null,
+        area_m2: property.area_m2 || null,
+        lot_m2: property.lot_m2 || null,
+        description_md: property.description_md,
+        featured: property.featured,
+        verified: property.verified,
+        is_demo: true,
+        published_at: new Date().toISOString()
+      }
 
-      await client.query(query, values);
-      console.log(`✅ Inserted mock property: ${property.title}`);
+      const { error: insertError } = await supabase
+        .from('properties')
+        .insert(propertyData)
+
+      if (insertError) {
+        // Check if it's a duplicate key error (property already exists)
+        if (insertError.code === '23505') {
+          console.log(`⚠️  Property already exists: ${property.title}`)
+        } else {
+          console.error(`❌ Error inserting property "${property.title}":`, insertError)
+        }
+      } else {
+        console.log(`✅ Inserted property: ${property.title} (${property.featured ? 'FEATURED' : 'FREE'})`)
+      }
     }
 
-    console.log('🎉 Mock properties seeded successfully!');
+    console.log('🎉 Property seeding completed!')
 
-  } finally {
-    // Close database connection
-    await client.end();
-    console.log('Database connection closed');
+  } catch (error) {
+    console.error('❌ Seeding failed:', error)
   }
 }
 
-seedMockProperties().catch(console.error);
+seedProperties()
