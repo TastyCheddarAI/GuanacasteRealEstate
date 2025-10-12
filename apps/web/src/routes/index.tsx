@@ -426,7 +426,7 @@ const GuanacasteRealEstate = () => {
                 {/* Search Button */}
                 <button className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-4 rounded-xl text-lg font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3">
                   <Search className="w-5 h-5" />
-                  Search 247 Properties
+                  Search Properties
                 </button>
               </div>
             </div>

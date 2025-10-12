@@ -130,7 +130,39 @@ export const searchAPI = {
     limit?: number;
     offset?: number;
   }) => {
-    return callEdgeFunction('search', { ...params });
+    // Convert search params to properties API filters
+    const filters: any = {};
+
+    if (params.type && params.type !== 'all') {
+      filters.type = params.type;
+    }
+    if (params.min_price) {
+      filters.min_price = params.min_price;
+    }
+    if (params.max_price) {
+      filters.max_price = params.max_price;
+    }
+    if (params.beds) {
+      filters.beds = params.beds;
+    }
+    if (params.baths) {
+      filters.baths = params.baths;
+    }
+
+    // For now, use direct properties API call
+    // TODO: Implement proper search with query matching
+    const page = Math.floor((params.offset || 0) / (params.limit || 20)) + 1;
+    const limit = params.limit || 20;
+
+    const result = await propertiesAPI.getProperties(filters, page, limit);
+
+    // Format response to match expected structure
+    return {
+      properties: result.properties || [],
+      total: result.total || 0,
+      page: result.page || page,
+      limit: result.limit || limit
+    };
   },
 };
 
@@ -280,7 +312,13 @@ export const propertiesAPI = {
       throw result.error;
     }
 
-    return result.data;
+    // Format the response to match expected structure
+    return {
+      properties: result.data || [],
+      total: (result as any).count || 0,
+      page,
+      limit
+    };
   }),
 
   createProperty: handleAsyncError(async (propertyData: any, clientId?: string) => {

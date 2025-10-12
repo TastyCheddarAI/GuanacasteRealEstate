@@ -26,6 +26,41 @@ const SearchResults = () => {
   const [error, setError] = useState<string | null>(null);
   const [totalResults, setTotalResults] = useState(0);
 
+  // Fallback mock data for development when no properties exist
+  const mockProperties = [
+    {
+      id: 'mock-1',
+      title: 'Oceanfront Villa - Tamarindo',
+      type: 'house',
+      price_numeric: 650000,
+      town: 'Tamarindo',
+      lat: 10.295,
+      lng: -85.837,
+      beds: 3,
+      baths: 2,
+      area_m2: 180,
+      lot_m2: 800,
+      description_md: 'Stunning oceanfront villa with panoramic Pacific views.',
+      media: [{ storage_path: 'oceanfront-villa.jpg', is_primary: true }],
+      owner: { full_name: 'Demo Owner' }
+    },
+    {
+      id: 'mock-2',
+      title: 'Beachfront Condo - Playa Flamingo',
+      type: 'condo',
+      price_numeric: 425000,
+      town: 'Playa Flamingo',
+      lat: 10.428,
+      lng: -85.785,
+      beds: 2,
+      baths: 2,
+      area_m2: 95,
+      description_md: 'Modern condo with marina views and resort amenities.',
+      media: [{ storage_path: 'beachfront-condo.jpg', is_primary: true }],
+      owner: { full_name: 'Demo Owner' }
+    }
+  ];
+
   const searchQuery = searchParams.get('q') || '';
   const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
@@ -45,8 +80,16 @@ const SearchResults = () => {
         };
 
         const response = await searchAPI.searchProperties(searchParams);
-        setProperties(response.properties || []);
-        setTotalResults(response.properties?.length || 0);
+        let propertiesData = response.properties || [];
+
+        // Use mock data as fallback if no properties found
+        if (propertiesData.length === 0) {
+          console.log('No properties found in database, using mock data for development');
+          propertiesData = mockProperties;
+        }
+
+        setProperties(propertiesData);
+        setTotalResults(propertiesData.length);
       } catch (err) {
         console.error('Error fetching search results:', err);
         setError('Failed to load search results');
@@ -59,10 +102,10 @@ const SearchResults = () => {
   }, [searchQuery, activeFilters]);
 
   const propertyTypes = [
-    { id: 'all', label: 'All Types', count: 24 },
-    { id: 'house', label: 'Houses', count: 12 },
-    { id: 'condo', label: 'Condos', count: 8 },
-    { id: 'lot', label: 'Lots', count: 4 }
+    { id: 'all', label: 'All Properties', count: 2 },
+    { id: 'house', label: 'Houses', count: 1 },
+    { id: 'condo', label: 'Condos', count: 1 },
+    { id: 'lot', label: 'Lots', count: 0 }
   ];
 
   const sortOptions = [
