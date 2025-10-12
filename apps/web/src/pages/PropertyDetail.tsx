@@ -17,6 +17,7 @@ const PropertyDetail = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [aiAssistantOpen, setAiAssistantOpen] = useState(false);
   const [rawProperty, setRawProperty] = useState<any>(null);
+  const [similarProperties, setSimilarProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,6 +33,11 @@ const PropertyDetail = () => {
         setLoading(true);
         const data = await propertiesAPI.getProperty(id);
         setRawProperty(data);
+
+        // Fetch similar properties
+        if (data) {
+          await fetchSimilarProperties(data);
+        }
       } catch (err) {
         console.error('Error fetching property:', err);
         setError('Failed to load property details');
@@ -42,6 +48,39 @@ const PropertyDetail = () => {
 
     fetchProperty();
   }, [id]);
+
+  const fetchSimilarProperties = async (property: any) => {
+    try {
+      // Get properties in the same town with similar price range
+      const filters = {
+        town: property.town,
+        min_price: Math.max(0, property.price_numeric - 50000),
+        max_price: property.price_numeric + 50000,
+      };
+
+      const result = await propertiesAPI.getProperties(filters, 1, 3);
+
+      // Filter out the current property and format the data
+      const similar = result.properties
+        .filter((p: any) => p.id !== property.id)
+        .slice(0, 3)
+        .map((p: any) => ({
+          id: p.id,
+          title: p.title,
+          location: `${p.town}, Guanacaste`,
+          price: p.price_numeric,
+          beds: p.beds,
+          baths: p.baths,
+          sqft: p.area_m2,
+          image: p.media?.[0] ? `${SUPABASE_URL}/storage/v1/object/public/properties/${p.media[0].storage_path}` : 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400'
+        }));
+
+      setSimilarProperties(similar);
+    } catch (err) {
+      console.error('Error fetching similar properties:', err);
+      // Keep empty array if fetch fails
+    }
+  };
 
   if (loading) {
     return (
@@ -110,38 +149,6 @@ const PropertyDetail = () => {
     saves: 0 // Would need saved properties data
   };
 
-  const similarProperties = [
-    {
-      id: 2,
-      title: 'Beachfront Condo with Ocean Views',
-      location: 'Tamarindo Centro',
-      price: 425000,
-      beds: 2,
-      baths: 2,
-      sqft: 1200,
-      image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400'
-    },
-    {
-      id: 3,
-      title: 'Luxury Villa in Flamingo',
-      location: 'Playa Flamingo',
-      price: 875000,
-      beds: 3,
-      baths: 3,
-      sqft: 2200,
-      image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400'
-    },
-    {
-      id: 4,
-      title: 'Mountain View Estate',
-      location: 'Potrero',
-      price: 650000,
-      beds: 4,
-      baths: 3,
-      sqft: 2800,
-      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400'
-    }
-  ];
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % property.images.length);
@@ -195,7 +202,7 @@ const PropertyDetail = () => {
 
         {/* Thumbnail Strip */}
         <div className="absolute bottom-4 left-4 flex gap-2 overflow-x-auto max-w-[calc(100vw-2rem)] sm:max-w-96">
-          {property.images.slice(0, 5).map((img, index) => (
+          {property.images.slice(0, 5).map((img: string, index: number) => (
             <button
               key={index}
               onClick={() => setCurrentImageIndex(index)}

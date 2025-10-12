@@ -22,6 +22,8 @@ import Explore from './pages/Explore'
 import Auth from './pages/Auth'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import PasswordResetPage from './pages/PasswordResetPage'
 import ProfilePage from './pages/ProfilePage'
 import UserDashboard from './pages/UserDashboard'
 import Resources from './pages/Resources'
@@ -67,6 +69,8 @@ function App() {
             <Route path="auth" element={<Auth />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="signup" element={<SignupPage />} />
+            <Route path="forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="reset-password" element={<PasswordResetPage />} />
             <Route path="profile" element={
               <ProtectedRoute>
                 <ProfilePage />

@@ -1,10 +1,10 @@
 // Service Worker for Guanacaste Real Estate PWA
 // Implements best-in-class caching, update management, and offline capabilities
 
-const CACHE_NAME = 'guanacaste-real-v2.1.0';
-const STATIC_CACHE = 'guanacaste-static-v2.1.0';
-const DYNAMIC_CACHE = 'guanacaste-dynamic-v2.1.0';
-const API_CACHE = 'guanacaste-api-v2.1.0';
+const CACHE_NAME = 'guanacaste-real-v2.1.2';
+const STATIC_CACHE = 'guanacaste-static-v2.1.2';
+const DYNAMIC_CACHE = 'guanacaste-dynamic-v2.1.2';
+const API_CACHE = 'guanacaste-api-v2.1.2';
 
 // Resources to cache immediately
 const STATIC_ASSETS = [

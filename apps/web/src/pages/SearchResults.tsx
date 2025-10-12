@@ -12,6 +12,7 @@ const SearchResults = () => {
   const [viewMode, setViewMode] = useState('grid');
   const [sortBy, setSortBy] = useState('newest');
   const [showFilters, setShowFilters] = useState(false);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [aiAssistantOpen, setAiAssistantOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<any>(null);
   const [activeFilters, setActiveFilters] = useState({
@@ -432,7 +433,13 @@ const SearchResults = () => {
             </div>
 
             <button
-              onClick={() => setShowFilters(!showFilters)}
+              onClick={() => {
+                if (window.innerWidth < 768) {
+                  setIsMobileFiltersOpen(true);
+                } else {
+                  setShowFilters(!showFilters);
+                }
+              }}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
                 showFilters
                   ? 'bg-cyan-500 text-white'
@@ -440,7 +447,8 @@ const SearchResults = () => {
               }`}
             >
               <Filter className="w-4 h-4" />
-              More Filters
+              <span className="hidden sm:inline">More Filters</span>
+              <span className="sm:hidden">Filters</span>
               {(activeFilters.features.length > 0 || activeFilters.beds || activeFilters.baths) && (
                 <span className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {(activeFilters.features.length + (activeFilters.beds ? 1 : 0) + (activeFilters.baths ? 1 : 0))}
@@ -453,14 +461,29 @@ const SearchResults = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex gap-8">
+          {/* Mobile Filters Overlay */}
+          {isMobileFiltersOpen && (
+            <div className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-50" onClick={() => setIsMobileFiltersOpen(false)} />
+          )}
+
           {/* Filters Sidebar */}
-          {showFilters && (
-            <div className="w-80 flex-shrink-0">
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sticky top-6">
+          {(showFilters || isMobileFiltersOpen) && (
+            <div className={`${
+              isMobileFiltersOpen ? 'fixed inset-y-0 right-0 z-50' : 'w-80 flex-shrink-0'
+            } ${isMobileFiltersOpen ? 'w-80' : ''} md:relative md:z-auto`}>
+              <div className={`bg-white rounded-xl shadow-sm border border-slate-200 p-6 ${
+                isMobileFiltersOpen ? 'h-full overflow-y-auto' : 'sticky top-6'
+              }`}>
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="font-semibold text-slate-900">Filters</h3>
                   <button
-                    onClick={() => setShowFilters(false)}
+                    onClick={() => {
+                      if (isMobileFiltersOpen) {
+                        setIsMobileFiltersOpen(false);
+                      } else {
+                        setShowFilters(false);
+                      }
+                    }}
                     className="p-1 hover:bg-slate-100 rounded-lg transition-colors"
                   >
                     <X className="w-4 h-4" />
@@ -552,18 +575,18 @@ const SearchResults = () => {
           {/* Results */}
           <div className="flex-1">
             {/* Results Header */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="text-slate-600">
+            <div className="mb-6">
+              <div className="text-slate-600 mb-4">
                 Showing <span className="font-semibold text-slate-900">{searchResults.length}</span> of <span className="font-semibold text-slate-900">{totalResults}</span> results for "{searchQuery}"
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 {/* Sort */}
-                <div className="relative">
+                <div className="relative w-full sm:w-auto">
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="appearance-none bg-white border border-slate-200 rounded-lg px-4 py-2 pr-8 text-sm focus:border-cyan-500 focus:outline-none"
+                    className="appearance-none bg-white border border-slate-200 rounded-lg px-4 py-2 pr-8 text-sm focus:border-cyan-500 focus:outline-none w-full sm:w-auto"
                   >
                     {sortOptions.map(option => (
                       <option key={option.value} value={option.value}>

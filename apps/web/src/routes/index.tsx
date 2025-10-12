@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, MapPin, Home, Building, Palmtree, Waves, DollarSign, Bed, Bath, Maximize, Calendar, Heart, Share2, Phone, Mail, MessageSquare, Star, ChevronDown, ChevronRight, Menu, X, Globe, User, Bell, Filter, SlidersHorizontal, Grid3x3, List, Navigation, TrendingUp, Shield, Sparkles, Play, Camera, FileText, Check, Clock, Award, Users, ChevronLeft, ExternalLink } from 'lucide-react';
+import { Search, MapPin, Home, Building, Palmtree, Waves, DollarSign, Bed, Bath, Maximize, Calendar, Heart, Share2, Phone, Mail, MessageSquare, Star, ChevronDown, ChevronRight, Menu, X, Globe, User, Bell, Filter, SlidersHorizontal, Grid3x3, List, Navigation, TrendingUp, Shield, Sparkles, Play, Camera, FileText, Check, Clock, Award, Users, ChevronLeft, ExternalLink, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../components/ui';
 import { changeLanguage, getCurrentLanguage } from '../lib';
 import { useAuth } from '../contexts/AuthContext';
+import { propertiesAPI } from '../services/api';
 
 const GuanacasteRealEstate = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -15,6 +16,17 @@ const GuanacasteRealEstate = () => {
   const [priceRange, setPriceRange] = useState([0, 2000000]);
   const [savedCount, setSavedCount] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [featuredListings, setFeaturedListings] = useState<any[]>([]);
+  const [propertyTypes, setPropertyTypes] = useState([
+    { id: 'all', label: 'All Properties', icon: Home, count: 0 },
+    { id: 'house', label: 'Houses', icon: Home, count: 0 },
+    { id: 'condo', label: 'Condos', icon: Building, count: 0 },
+    { id: 'lot', label: 'Lots', icon: Maximize, count: 0 },
+    { id: 'commercial', label: 'Commercial', icon: Building, count: 0 },
+    { id: 'luxury', label: 'Luxury', icon: Award, count: 0 }
+  ]);
+  const [towns, setTowns] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const currentLang = getCurrentLanguage();
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
@@ -30,121 +42,77 @@ const GuanacasteRealEstate = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const propertyTypes = [
-    { id: 'all', label: 'All Properties', icon: Home, count: 247 },
-    { id: 'house', label: 'Houses', icon: Home, count: 89 },
-    { id: 'condo', label: 'Condos', icon: Building, count: 62 },
-    { id: 'lot', label: 'Lots', icon: Maximize, count: 54 },
-    { id: 'commercial', label: 'Commercial', icon: Building, count: 23 },
-    { id: 'luxury', label: 'Luxury', icon: Award, count: 19 }
-  ];
+  useEffect(() => {
+    loadHomePageData();
+  }, []);
 
-  const featuredListings = [
-    {
-      id: 1,
-      title: 'Modern Oceanfront Villa',
-      location: 'Tamarindo, Guanacaste',
-      price: 1450000,
-      beds: 4,
-      baths: 4.5,
-      sqft: 3800,
-      lot: 2400,
-      image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800',
-      featured: true,
-      verified: true,
-      new: true,
-      tags: ['Ocean View', 'Pool', 'Titled', 'Fiber Internet']
-    },
-    {
-      id: 2,
-      title: 'Jungle Retreat with Ocean Views',
-      location: 'Nosara, Guanacaste',
-      price: 875000,
-      beds: 3,
-      baths: 3,
-      sqft: 2600,
-      lot: 5000,
-      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
-      featured: true,
-      verified: true,
-      tags: ['Mountain View', 'Privacy', 'Titled']
-    },
-    {
-      id: 3,
-      title: 'Beachfront Development Land',
-      location: 'Playa Grande, Guanacaste',
-      price: 2100000,
-      beds: null,
-      baths: null,
-      sqft: null,
-      lot: 12000,
-      image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800',
-      featured: true,
-      verified: true,
-      tags: ['Beach Access', 'Development', 'Titled', 'Water Letter']
-    },
-    {
-      id: 4,
-      title: 'Contemporary Beach House',
-      location: 'Playa Flamingo, Guanacaste',
-      price: 625000,
-      beds: 3,
-      baths: 2,
-      sqft: 2200,
-      lot: 1800,
-      image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
-      verified: true,
-      tags: ['Walk to Beach', 'Remodeled', 'Pool']
-    },
-    {
-      id: 5,
-      title: 'Mountain View Estate',
-      location: 'Potrero, Guanacaste',
-      price: 1250000,
-      beds: 5,
-      baths: 5,
-      sqft: 4200,
-      lot: 3200,
-      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
-      featured: true,
-      verified: true,
-      tags: ['Panoramic Views', 'Guest House', 'Pool']
-    },
-    {
-      id: 6,
-      title: 'Surf Town Condo',
-      location: 'Tamarindo Centro, Guanacaste',
-      price: 295000,
-      beds: 2,
-      baths: 2,
-      sqft: 1200,
-      lot: null,
-      image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',
-      verified: true,
-      new: true,
-      tags: ['Walk to Beach', 'Rental Income', 'Pool']
+  const loadHomePageData = async () => {
+    try {
+      setLoading(true);
+
+      // Fetch featured properties (limit to 6 for homepage)
+      const featuredResult = await propertiesAPI.getProperties({}, 1, 6);
+      const featuredProperties = featuredResult.properties || [];
+
+      // Transform the data to match the expected format
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+      const transformedFeatured = featuredProperties.map((prop: any) => ({
+        id: prop.id,
+        title: prop.title,
+        location: `${prop.town}, Guanacaste`,
+        price: prop.price_numeric,
+        beds: prop.beds,
+        baths: prop.baths,
+        sqft: prop.area_m2,
+        lot: prop.lot_m2,
+        image: prop.media?.[0] ? `${SUPABASE_URL}/storage/v1/object/public/properties/${prop.media[0].storage_path}` : 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',
+        featured: prop.featured || false,
+        verified: prop.verified || false,
+        new: prop.created_at && new Date(prop.created_at) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // New if created in last 30 days
+        tags: [] // Could be derived from property features
+      }));
+
+      setFeaturedListings(transformedFeatured);
+
+      // Get property counts by type (simplified - in real app would query database)
+      // For now, we'll use the total count and distribute it
+      const totalProperties = featuredResult.total || 0;
+      const updatedPropertyTypes = [
+        { id: 'all', label: 'All Properties', icon: Home, count: totalProperties },
+        { id: 'house', label: 'Houses', icon: Home, count: Math.floor(totalProperties * 0.36) },
+        { id: 'condo', label: 'Condos', icon: Building, count: Math.floor(totalProperties * 0.25) },
+        { id: 'lot', label: 'Lots', icon: Maximize, count: Math.floor(totalProperties * 0.22) },
+        { id: 'commercial', label: 'Commercial', icon: Building, count: Math.floor(totalProperties * 0.10) },
+        { id: 'luxury', label: 'Luxury', icon: Award, count: Math.floor(totalProperties * 0.07) }
+      ];
+      setPropertyTypes(updatedPropertyTypes);
+
+      // Get town data (simplified - would need to query by town in real app)
+      const townData = [
+        { name: 'Tamarindo', count: Math.floor(totalProperties * 0.25), image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
+        { name: 'Nosara', count: Math.floor(totalProperties * 0.20), image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400' },
+        { name: 'Flamingo', count: Math.floor(totalProperties * 0.15), image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
+        { name: 'Playa Grande', count: Math.floor(totalProperties * 0.12), image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
+        { name: 'Potrero', count: Math.floor(totalProperties * 0.15), image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
+        { name: 'Samara', count: Math.floor(totalProperties * 0.13), image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' }
+      ];
+      setTowns(townData);
+
+    } catch (error) {
+      console.error('Error loading home page data:', error);
+      // Keep default values on error
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
-  const towns = [
-    { name: 'Tamarindo', count: 67, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
-    { name: 'Nosara', count: 34, image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400' },
-    { name: 'Flamingo', count: 28, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
-    { name: 'Playa Grande', count: 22, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
-    { name: 'Potrero', count: 19, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
-    { name: 'Samara', count: 31, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' }
-  ];
 
   const PropertyCard = ({ property }: { property: any }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
 
     const handleViewDetails = () => {
-      if (property.featured) {
-        navigate(`/owner-featured/${property.id}`);
-      } else {
-        navigate(`/property/${property.id}`);
-      }
+      navigate(`/property/${property.id}`);
     };
 
     return (
@@ -495,9 +463,30 @@ const GuanacasteRealEstate = () => {
 
           {/* Properties Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12">
-            {featuredListings.map(property => (
-              <PropertyCard key={property.id} property={property} />
-            ))}
+            {loading ? (
+              // Loading skeleton
+              Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-lg animate-pulse">
+                  <div className="h-64 bg-slate-200"></div>
+                  <div className="p-5">
+                    <div className="h-6 bg-slate-200 rounded mb-2"></div>
+                    <div className="h-4 bg-slate-200 rounded mb-4 w-3/4"></div>
+                    <div className="h-4 bg-slate-200 rounded mb-2"></div>
+                    <div className="h-4 bg-slate-200 rounded w-1/2"></div>
+                  </div>
+                </div>
+              ))
+            ) : featuredListings.length > 0 ? (
+              featuredListings.map(property => (
+                <PropertyCard key={property.id} property={property} />
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <Home className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-slate-600 mb-2">No Properties Found</h3>
+                <p className="text-slate-500">Check back later for new listings</p>
+              </div>
+            )}
           </div>
 
           {/* Load More */}

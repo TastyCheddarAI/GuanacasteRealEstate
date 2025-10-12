@@ -651,5 +651,223 @@ export const contentAPI = {
   },
 };
 
+// Saved Properties API
+export const savedPropertiesAPI = {
+  getSavedProperties: async (profileId: string) => {
+    const { data, error } = await supabase
+      .from('saved_properties')
+      .select(`
+        *,
+        property:properties (
+          id,
+          title,
+          town,
+          price_numeric,
+          beds,
+          baths,
+          area_m2,
+          media
+        )
+      `)
+      .eq('profile_id', profileId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data;
+  },
+
+  saveProperty: async (profileId: string, propertyId: string) => {
+    const { data, error } = await supabase
+      .from('saved_properties')
+      .insert({
+        profile_id: profileId,
+        property_id: propertyId
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  unsaveProperty: async (profileId: string, propertyId: string) => {
+    const { error } = await supabase
+      .from('saved_properties')
+      .delete()
+      .eq('profile_id', profileId)
+      .eq('property_id', propertyId);
+
+    if (error) throw error;
+    return true;
+  }
+};
+
+// Search History API
+export const searchHistoryAPI = {
+  getSearchHistory: async (profileId: string) => {
+    const { data, error } = await supabase
+      .from('search_history')
+      .select('*')
+      .eq('profile_id', profileId)
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (error) throw error;
+    return data;
+  },
+
+  saveSearch: async (profileId: string, searchData: {
+    query?: string;
+    filters: any;
+    results_count: number;
+  }) => {
+    const { data, error } = await supabase
+      .from('search_history')
+      .insert({
+        profile_id: profileId,
+        ...searchData
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+};
+
+// Viewing History API
+export const viewingHistoryAPI = {
+  getViewingHistory: async (profileId: string) => {
+    const { data, error } = await supabase
+      .from('property_views')
+      .select(`
+        *,
+        property:properties (
+          id,
+          title,
+          town,
+          price_numeric,
+          media
+        )
+      `)
+      .eq('profile_id', profileId)
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    if (error) throw error;
+    return data;
+  },
+
+  recordView: async (profileId: string, propertyId: string, timeSpent?: number) => {
+    const { data, error } = await supabase
+      .from('property_views')
+      .insert({
+        profile_id: profileId,
+        property_id: propertyId,
+        time_spent_seconds: timeSpent
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+};
+
+// User Statistics API
+export const userStatsAPI = {
+  getUserStats: async (profileId: string) => {
+    // Get saved properties count
+    const { count: savedCount } = await supabase
+      .from('saved_properties')
+      .select('*', { count: 'exact', head: true })
+      .eq('profile_id', profileId);
+
+    // Get search history count
+    const { count: searchCount } = await supabase
+      .from('search_history')
+      .select('*', { count: 'exact', head: true })
+      .eq('profile_id', profileId);
+
+    // Get viewing history count
+    const { count: viewCount } = await supabase
+      .from('property_views')
+      .select('*', { count: 'exact', head: true })
+      .eq('profile_id', profileId);
+
+    // Get recommendations count (this would be calculated based on user preferences)
+    const recommendationsCount = 0; // TODO: Implement recommendation algorithm
+
+    return {
+      savedProperties: savedCount || 0,
+      recentSearches: searchCount || 0,
+      viewedProperties: viewCount || 0,
+      recommendations: recommendationsCount
+    };
+  }
+};
+
+// Recommendations API
+export const recommendationsAPI = {
+  getRecommendations: async (profileId: string) => {
+    // This is a simplified recommendation algorithm
+    // In a real app, this would use machine learning based on user behavior
+
+    // Get user's search history and saved properties to understand preferences
+    const [searchHistory, savedProperties] = await Promise.all([
+      searchHistoryAPI.getSearchHistory(profileId),
+      savedPropertiesAPI.getSavedProperties(profileId)
+    ]);
+
+    // Extract preferred towns and price ranges from search history
+    const preferredTowns = new Set<string>();
+    const priceRanges: number[] = [];
+
+    searchHistory.forEach(search => {
+      if (search.filters?.town) {
+        preferredTowns.add(search.filters.town);
+      }
+      if (search.filters?.min_price) priceRanges.push(search.filters.min_price);
+      if (search.filters?.max_price) priceRanges.push(search.filters.max_price);
+    });
+
+    // Get properties matching user preferences
+    let query = supabase
+      .from('properties')
+      .select('*')
+      .limit(10);
+
+    if (preferredTowns.size > 0) {
+      query = query.in('town', Array.from(preferredTowns));
+    }
+
+    if (priceRanges.length > 0) {
+      const minPrice = Math.min(...priceRanges);
+      const maxPrice = Math.max(...priceRanges);
+      query = query.gte('price_numeric', minPrice * 0.8).lte('price_numeric', maxPrice * 1.2);
+    }
+
+    const { data: properties, error } = await query;
+
+    if (error) throw error;
+
+    // Calculate match scores and format recommendations
+    const recommendations = properties?.map(property => ({
+      id: property.id,
+      title: property.title,
+      location: `${property.town}, Guanacaste`,
+      price: property.price_numeric,
+      beds: property.beds,
+      baths: property.baths,
+      sqft: property.area_m2,
+      image: property.media?.[0] ? `${SUPABASE_URL}/storage/v1/object/public/properties/${property.media[0].storage_path}` : '',
+      match: Math.floor(70 + Math.random() * 25), // Simplified match score
+      reason: 'Based on your search preferences'
+    })) || [];
+
+    return recommendations;
+  }
+};
+
 // Export market data service for direct access to predictive analytics
 export { marketDataService } from './marketData';

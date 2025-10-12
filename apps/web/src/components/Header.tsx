@@ -1,18 +1,25 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@guanacaste-real/ui'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@guanacaste-real/ui'
 import { changeLanguage, getCurrentLanguage } from '@guanacaste-real/lib'
 import { useAuth } from '../contexts/AuthContext'
-import { Home, Search, MessageSquare, Heart, BarChart3, Plus } from 'lucide-react'
+import { Home, Search, MessageSquare, Heart, BarChart3, Plus, Menu, X } from 'lucide-react'
 
 export default function Header() {
-  const currentLang = getCurrentLanguage()
-  const { user, profile, signOut } = useAuth()
-  const navigate = useNavigate()
+   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+   const currentLang = getCurrentLanguage()
+   const { user, profile, signOut } = useAuth()
+   const navigate = useNavigate()
 
   const handleSignOut = async () => {
     await signOut()
     navigate('/')
+  }
+
+  const handleNavigation = (path: string) => {
+    navigate(path)
+    setMobileMenuOpen(false) // Close mobile menu after navigation
   }
 
   const getDashboardInfo = () => {
@@ -37,6 +44,15 @@ export default function Header() {
   return (
     <header className="border-b bg-white/95 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setMobileMenuOpen(true)}
+          className="md:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors"
+          aria-label="Open navigation menu"
+        >
+          <Menu className="w-6 h-6 text-slate-700" />
+        </button>
+
         <div className="flex items-center space-x-6">
           <button onClick={() => navigate('/')} className="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
@@ -157,6 +173,146 @@ export default function Header() {
           </DropdownMenu>
         </div>
       </div>
+
+      {/* Mobile Navigation Menu */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+
+          {/* Menu Panel */}
+          <div className="absolute left-0 top-0 h-full w-80 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out">
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-slate-200">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <Home className="w-4 h-4 text-white" />
+                </div>
+                <span className="font-bold text-lg text-slate-900">Menu</span>
+              </div>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
+                aria-label="Close navigation menu"
+              >
+                <X className="w-6 h-6 text-slate-700" />
+              </button>
+            </div>
+
+            {/* Navigation Links */}
+            <nav className="p-4 space-y-1">
+              <button
+                onClick={() => handleNavigation('/')}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left text-slate-700 hover:text-cyan-600 hover:bg-slate-50 rounded-lg transition-all"
+              >
+                <Home className="w-5 h-5" />
+                <span className="font-medium">Home</span>
+              </button>
+
+              <button
+                onClick={() => handleNavigation('/free-listings')}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left text-slate-700 hover:text-cyan-600 hover:bg-slate-50 rounded-lg transition-all"
+              >
+                <Search className="w-5 h-5" />
+                <span className="font-medium">Free Listings</span>
+              </button>
+
+              <button
+                onClick={() => handleNavigation('/search')}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left text-slate-700 hover:text-cyan-600 hover:bg-slate-50 rounded-lg transition-all"
+              >
+                <Search className="w-5 h-5" />
+                <span className="font-medium">Search</span>
+              </button>
+
+              {user && (
+                <>
+                  <button
+                    onClick={() => handleNavigation('/saved')}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-slate-700 hover:text-cyan-600 hover:bg-slate-50 rounded-lg transition-all"
+                  >
+                    <Heart className="w-5 h-5" />
+                    <span className="font-medium">Saved</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleNavigation('/messages')}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-slate-700 hover:text-cyan-600 hover:bg-slate-50 rounded-lg transition-all"
+                  >
+                    <MessageSquare className="w-5 h-5" />
+                    <span className="font-medium">Messages</span>
+                  </button>
+
+                  {dashboardInfo && (
+                    <button
+                      onClick={() => handleNavigation(dashboardInfo.path)}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-left text-slate-700 hover:text-cyan-600 hover:bg-slate-50 rounded-lg transition-all"
+                    >
+                      <BarChart3 className="w-5 h-5" />
+                      <span className="font-medium">{dashboardInfo.text}</span>
+                    </button>
+                  )}
+                </>
+              )}
+
+              {/* Language Selector */}
+              <div className="pt-4 mt-4 border-t border-slate-200">
+                <div className="px-4 py-2 text-sm font-medium text-slate-500 uppercase tracking-wide">
+                  Language
+                </div>
+                <button
+                  onClick={() => changeLanguage('en')}
+                  className={`w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-all ${
+                    currentLang === 'en' ? 'text-cyan-600 bg-cyan-50' : 'text-slate-700 hover:text-cyan-600 hover:bg-slate-50'
+                  }`}
+                >
+                  <span className="font-medium">English</span>
+                </button>
+                <button
+                  onClick={() => changeLanguage('es')}
+                  className={`w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-all ${
+                    currentLang === 'es' ? 'text-cyan-600 bg-cyan-50' : 'text-slate-700 hover:text-cyan-600 hover:bg-slate-50'
+                  }`}
+                >
+                  <span className="font-medium">Español</span>
+                </button>
+              </div>
+
+              {/* Auth Section */}
+              {!user ? (
+                <div className="pt-4 mt-4 border-t border-slate-200">
+                  <button
+                    onClick={() => {
+                      handleNavigation('/login')
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-slate-700 hover:text-cyan-600 hover:bg-slate-50 rounded-lg transition-all"
+                  >
+                    <span className="font-medium">Login</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="pt-4 mt-4 border-t border-slate-200 space-y-1">
+                  <button
+                    onClick={() => handleNavigation('/profile')}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-slate-700 hover:text-cyan-600 hover:bg-slate-50 rounded-lg transition-all"
+                  >
+                    <span className="font-medium">Profile Settings</span>
+                  </button>
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all"
+                  >
+                    <span className="font-medium">Logout</span>
+                  </button>
+                </div>
+              )}
+            </nav>
+          </div>
+        </div>
+      )}
     </header>
   )
 }

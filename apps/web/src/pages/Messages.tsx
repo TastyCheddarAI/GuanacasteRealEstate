@@ -1,103 +1,56 @@
-import React, { useState } from 'react';
-import { MessageSquare, Send, Search, MoreVertical, Phone, Mail, User, Clock, Check, CheckCheck, Paperclip, Smile, Image, MapPin } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { MessageSquare, Send, Search, MoreVertical, Phone, Mail, User, Clock, Check, CheckCheck, Paperclip, Smile, Image, MapPin, X } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import MessagingService, { Conversation, Message as MessageType } from '../services/messaging';
 
 const Messages = () => {
-  const [selectedConversation, setSelectedConversation] = useState(1);
+  const { user } = useAuth();
+  const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [messages, setMessages] = useState<MessageType[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
 
-  const conversations = [
-    {
-      id: 1,
-      buyer: {
-        name: 'John Smith',
-        avatar: 'JS',
-        verified: true
-      },
-      property: 'Modern Oceanfront Villa',
-      lastMessage: 'Hi, I\'m interested in your property. Can we schedule a viewing?',
-      time: '2 hours ago',
-      unread: 2,
-      status: 'active'
-    },
-    {
-      id: 2,
-      buyer: {
-        name: 'Maria Garcia',
-        avatar: 'MG',
-        verified: false
-      },
-      property: 'Beachfront Condo',
-      lastMessage: 'Is the price negotiable?',
-      time: '5 hours ago',
-      unread: 0,
-      status: 'active'
-    },
-    {
-      id: 3,
-      buyer: {
-        name: 'David Johnson',
-        avatar: 'DJ',
-        verified: true
-      },
-      property: 'Modern Oceanfront Villa',
-      lastMessage: 'Can you provide more details about the utilities?',
-      time: '1 day ago',
-      unread: 1,
-      status: 'active'
-    },
-    {
-      id: 4,
-      buyer: {
-        name: 'Sarah Wilson',
-        avatar: 'SW',
-        verified: true
-      },
-      property: 'Mountain View Cabin',
-      lastMessage: 'Thanks for the information. I\'ll be in touch soon.',
-      time: '2 days ago',
-      unread: 0,
-      status: 'archived'
+  useEffect(() => {
+    if (user?.id) {
+      loadConversations();
     }
-  ];
+  }, [user]);
 
-  const messages = [
-    {
-      id: 1,
-      sender: 'buyer',
-      content: 'Hi! I saw your listing for the Modern Oceanfront Villa. It looks amazing!',
-      time: '2 hours ago',
-      read: true
-    },
-    {
-      id: 2,
-      sender: 'seller',
-      content: 'Thank you! I\'m glad you like it. It\'s been in our family for 10 years.',
-      time: '2 hours ago',
-      read: true
-    },
-    {
-      id: 3,
-      sender: 'buyer',
-      content: 'Can we schedule a viewing? I\'m in Tamarindo next week.',
-      time: '2 hours ago',
-      read: true
-    },
-    {
-      id: 4,
-      sender: 'seller',
-      content: 'Absolutely! How about Thursday at 2 PM? I can show you around the property.',
-      time: '1 hour ago',
-      read: true
-    },
-    {
-      id: 5,
-      sender: 'buyer',
-      content: 'Thursday works perfect. Should I bring anything?',
-      time: '30 min ago',
-      read: false
+  useEffect(() => {
+    if (selectedConversation) {
+      loadMessages(selectedConversation);
+      MessagingService.markAsRead(selectedConversation, user!.id);
     }
-  ];
+  }, [selectedConversation, user]);
+
+  const loadConversations = async () => {
+    if (!user?.id) return;
+
+    try {
+      const convs = await MessagingService.getConversations(user.id);
+      setConversations(convs);
+      if (convs.length > 0 && !selectedConversation) {
+        setSelectedConversation(convs[0].id);
+      }
+    } catch (error) {
+      console.error('Error loading conversations:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadMessages = async (threadId: string) => {
+    try {
+      const msgs = await MessagingService.getMessages(threadId);
+      setMessages(msgs);
+    } catch (error) {
+      console.error('Error loading messages:', error);
+    }
+  };
 
   const filteredConversations = conversations.filter(conv =>
     conv.buyer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -106,45 +59,130 @@ const Messages = () => {
 
   const selectedConv = conversations.find(c => c.id === selectedConversation);
 
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      // In a real app, this would send the message to the backend
-      console.log('Sending message:', newMessage);
-      setNewMessage('');
+  const handleSendMessage = async () => {
+    if (!newMessage.trim() || !selectedConv || !user?.id) return;
+
+    setSending(true);
+    try {
+      // Find the other participant's profile ID
+      // This is a simplified approach - in a real app, you'd store participant IDs in the conversation
+      const otherProfileId = selectedConv.buyer.name === 'Unknown User' ? null :
+        // For now, we'll need to get this from the messages
+        messages.find(m => m.from_profile_id !== user.id)?.from_profile_id ||
+        messages.find(m => m.to_profile_id !== user.id)?.to_profile_id;
+
+      if (!otherProfileId) {
+        console.error('Could not determine recipient');
+        return;
+      }
+
+      const result = await MessagingService.sendMessage(
+        user.id,
+        otherProfileId,
+        newMessage,
+        undefined, // property_id - could be extracted from conversation
+        selectedConversation!
+      );
+
+      if (result.success) {
+        setNewMessage('');
+        // Reload messages to show the new message
+        if (selectedConversation) {
+          await loadMessages(selectedConversation);
+        }
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setSending(false);
     }
   };
 
-  const MessageBubble = ({ message }) => (
-    <div className={`flex mb-4 ${message.sender === 'seller' ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
-        message.sender === 'seller'
-          ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white'
-          : 'bg-white border border-slate-200 text-slate-900'
-      }`}>
-        <p className="text-sm">{message.content}</p>
-        <div className={`flex items-center justify-end gap-1 mt-1 text-xs ${
-          message.sender === 'seller' ? 'text-cyan-100' : 'text-slate-500'
+  const MessageBubble = ({ message }: { message: MessageType }) => {
+    const isFromCurrentUser = message.from_profile_id === user?.id;
+    const formatTime = (dateString: string) => {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
+
+      if (diffInHours < 1) {
+        const diffInMinutes = Math.floor(diffInHours * 60);
+        return diffInMinutes <= 1 ? 'Just now' : `${diffInMinutes} min ago`;
+      } else if (diffInHours < 24) {
+        return `${Math.floor(diffInHours)} hours ago`;
+      } else {
+        return date.toLocaleDateString();
+      }
+    };
+
+    return (
+      <div className={`flex mb-4 ${isFromCurrentUser ? 'justify-end' : 'justify-start'}`}>
+        <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
+          isFromCurrentUser
+            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white'
+            : 'bg-white border border-slate-200 text-slate-900'
         }`}>
-          <span>{message.time}</span>
-          {message.sender === 'seller' && (
-            message.read ? (
-              <CheckCheck className="w-3 h-3" />
-            ) : (
-              <Check className="w-3 h-3" />
-            )
-          )}
+          <p className="text-sm">{message.body}</p>
+          <div className={`flex items-center justify-end gap-1 mt-1 text-xs ${
+            isFromCurrentUser ? 'text-cyan-100' : 'text-slate-500'
+          }`}>
+            <span>{formatTime(message.created_at)}</span>
+            {isFromCurrentUser && (
+              message.read_at ? (
+                <CheckCheck className="w-3 h-3" />
+              ) : (
+                <Check className="w-3 h-3" />
+              )
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <MessageSquare className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+          <p className="text-slate-600">Loading messages...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden" style={{ height: 'calc(100vh - 8rem)' }}>
-          <div className="flex h-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden h-[calc(100vh-6rem)] sm:h-[calc(100vh-8rem)]">
+          <div className="flex h-full relative">
+            {/* Mobile Menu Toggle */}
+            <button
+              onClick={() => setShowSidebar(true)}
+              className="md:hidden fixed top-20 left-4 z-50 bg-white p-3 rounded-lg shadow-lg border border-slate-200"
+            >
+              <MessageSquare className="w-5 h-5 text-slate-600" />
+            </button>
+
+            {/* Mobile Overlay */}
+            {showSidebar && (
+              <div
+                className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+                onClick={() => setShowSidebar(false)}
+              />
+            )}
+
             {/* Conversations Sidebar */}
-            <div className="w-80 border-r border-slate-200 flex flex-col">
+            <div className={`${
+              showSidebar ? 'translate-x-0' : '-translate-x-full'
+            } md:translate-x-0 fixed md:relative inset-y-0 left-0 z-40 md:z-auto w-80 md:w-80 bg-white md:bg-transparent border-r border-slate-200 flex flex-col transition-transform duration-300 ease-in-out`}>
+              {/* Mobile Close Button */}
+              <button
+                onClick={() => setShowSidebar(false)}
+                className="md:hidden absolute top-4 right-4 p-2 hover:bg-slate-100 rounded-lg transition-colors z-50"
+              >
+                <X className="w-5 h-5 text-slate-600" />
+              </button>
               {/* Header */}
               <div className="p-6 border-b border-slate-200">
                 <div className="flex items-center justify-between mb-4">
@@ -171,10 +209,19 @@ const Messages = () => {
 
               {/* Conversations List */}
               <div className="flex-1 overflow-y-auto">
-                {filteredConversations.map((conversation) => (
+                {filteredConversations.length === 0 ? (
+                  <div className="p-6 text-center text-slate-500">
+                    <MessageSquare className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+                    <p>No conversations yet</p>
+                  </div>
+                ) : (
+                  filteredConversations.map((conversation) => (
                   <div
                     key={conversation.id}
-                    onClick={() => setSelectedConversation(conversation.id)}
+                    onClick={() => {
+                      setSelectedConversation(conversation.id);
+                      setShowSidebar(false); // Close sidebar on mobile when conversation selected
+                    }}
                     className={`p-4 border-b border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors ${
                       selectedConversation === conversation.id ? 'bg-cyan-50 border-r-2 border-r-cyan-500' : ''
                     }`}
@@ -217,12 +264,13 @@ const Messages = () => {
                       </div>
                     </div>
                   </div>
-                ))}
+                ))
+                )}
               </div>
             </div>
 
             {/* Chat Area */}
-            <div className="flex-1 flex flex-col">
+            <div className={`flex-1 flex flex-col ${showSidebar ? 'hidden md:flex' : 'flex'}`}>
               {selectedConv ? (
                 <>
                   {/* Chat Header */}
@@ -311,10 +359,14 @@ const Messages = () => {
 
                       <button
                         onClick={handleSendMessage}
-                        disabled={!newMessage.trim()}
+                        disabled={!newMessage.trim() || sending}
                         className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-3 rounded-xl hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <Send className="w-5 h-5" />
+                        {sending ? (
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <Send className="w-5 h-5" />
+                        )}
                       </button>
                     </div>
 

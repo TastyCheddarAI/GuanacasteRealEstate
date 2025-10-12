@@ -4,7 +4,7 @@ import { Button } from '../components/ui'
 import { Input } from '../components/ui'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui'
 import { useAuth } from '../contexts/AuthContext'
-import { Mail, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
+import { Mail, AlertCircle, CheckCircle, Loader2, Key } from 'lucide-react'
 
 type MessageType = 'success' | 'error' | 'info'
 
@@ -13,13 +13,13 @@ interface MessageState {
   text: string
 }
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<MessageState | null>(null)
   const [emailError, setEmailError] = useState('')
   const [isEmailValid, setIsEmailValid] = useState(false)
-  const { signIn } = useAuth()
+  const { resetPassword } = useAuth()
   const navigate = useNavigate()
 
   // Email validation
@@ -53,7 +53,7 @@ export default function LoginPage() {
     setMessage(null)
 
     try {
-      const { error } = await signIn(email)
+      const { error } = await resetPassword(email)
 
       if (error) {
         // Handle specific error types
@@ -63,8 +63,8 @@ export default function LoginPage() {
           errorMessage = 'Too many requests. Please wait a moment before trying again.'
         } else if (error.message.includes('network') || error.message.includes('fetch')) {
           errorMessage = 'Network error. Please check your connection and try again.'
-        } else if (error.message.includes('invalid')) {
-          errorMessage = 'Invalid email format. Please check and try again.'
+        } else if (error.message.includes('not found') || error.message.includes('no user')) {
+          errorMessage = 'No account found with this email address.'
         } else if (error.message) {
           errorMessage = error.message
         }
@@ -73,7 +73,7 @@ export default function LoginPage() {
       } else {
         setMessage({
           type: 'success',
-          text: 'Magic link sent! Check your email and click the link to sign in.'
+          text: 'Password reset email sent! Check your inbox and follow the instructions to reset your password.'
         })
 
         // Clear form after successful submission
@@ -127,9 +127,9 @@ export default function LoginPage() {
     <div className="container mx-auto py-8 max-w-md">
       <Card>
         <CardHeader>
-          <CardTitle className="text-center">Welcome Back</CardTitle>
+          <CardTitle className="text-center">Reset Password</CardTitle>
           <p className="text-center text-slate-600 text-sm">
-            Sign in to your Guanacaste Real account
+            Enter your email address and we'll send you a link to reset your password.
           </p>
         </CardHeader>
         <CardContent>
@@ -176,12 +176,12 @@ export default function LoginPage() {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Sending Magic Link...
+                  Sending Reset Link...
                 </>
               ) : (
                 <>
-                  <Mail className="w-4 h-4 mr-2" />
-                  Send Magic Link
+                  <Key className="w-4 h-4 mr-2" />
+                  Send Reset Link
                 </>
               )}
             </Button>
@@ -196,21 +196,13 @@ export default function LoginPage() {
             </div>
           )}
 
-          <div className="mt-6 text-center space-y-2">
+          <div className="mt-6 text-center">
             <button
-              onClick={() => navigate('/forgot-password')}
+              onClick={() => navigate('/login')}
               className="text-sm text-blue-600 hover:underline block w-full py-2"
               disabled={loading}
             >
-              Forgot your password?
-            </button>
-            <div className="text-slate-400 text-sm">or</div>
-            <button
-              onClick={() => navigate('/signup')}
-              className="text-sm text-blue-600 hover:underline block w-full py-2"
-              disabled={loading}
-            >
-              Don't have an account? Sign up
+              Back to Login
             </button>
           </div>
         </CardContent>
