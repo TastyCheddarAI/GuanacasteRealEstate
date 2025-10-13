@@ -40,7 +40,8 @@
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
 
-    "db:migrate": "supabase db push",
+    "db:migrate": "tsx scripts/run-migration.ts",
+    "db:migrate:supabase": "supabase db push",
     "db:seed": "tsx scripts/seed-mock-properties.ts",
     "db:reset": "supabase db reset",
     "db:backup": "supabase db dump > backup.sql",
@@ -66,6 +67,7 @@
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
+    "tsx": "^4.0.0",
     "typescript": "^5.6.3"
   },
   "dependencies": {
