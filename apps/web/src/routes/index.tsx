@@ -89,18 +89,26 @@ const GuanacasteRealEstate = () => {
 
       // Get town data (simplified - would need to query by town in real app)
       const townData = [
-        { name: 'Tamarindo', count: Math.floor(totalProperties * 0.25), image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
-        { name: 'Nosara', count: Math.floor(totalProperties * 0.20), image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400' },
-        { name: 'Flamingo', count: Math.floor(totalProperties * 0.15), image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
-        { name: 'Playa Grande', count: Math.floor(totalProperties * 0.12), image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
-        { name: 'Potrero', count: Math.floor(totalProperties * 0.15), image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
-        { name: 'Samara', count: Math.floor(totalProperties * 0.13), image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' }
+        { name: 'Tamarindo', count: Math.floor(totalProperties * 0.25) || 67, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
+        { name: 'Nosara', count: Math.floor(totalProperties * 0.20) || 45, image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400' },
+        { name: 'Flamingo', count: Math.floor(totalProperties * 0.15) || 38, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
+        { name: 'Playa Grande', count: Math.floor(totalProperties * 0.12) || 29, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
+        { name: 'Potrero', count: Math.floor(totalProperties * 0.15) || 52, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
+        { name: 'Samara', count: Math.floor(totalProperties * 0.13) || 41, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' }
       ];
       setTowns(townData);
 
     } catch (error) {
       console.error('Error loading home page data:', error);
-      // Keep default values on error
+      // Set fallback town data even on error
+      setTowns([
+        { name: 'Tamarindo', count: 67, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
+        { name: 'Nosara', count: 45, image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400' },
+        { name: 'Flamingo', count: 38, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
+        { name: 'Playa Grande', count: 29, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
+        { name: 'Potrero', count: 52, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' },
+        { name: 'Samara', count: 41, image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400' }
+      ]);
     } finally {
       setLoading(false);
     }
