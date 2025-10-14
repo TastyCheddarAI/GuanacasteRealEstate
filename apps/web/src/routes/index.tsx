@@ -483,36 +483,6 @@ const GuanacasteRealEstate = () => {
               </button>
             </div>
           </div>
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:flex items-center gap-2 bg-slate-100 rounded-xl p-1">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg transition-all duration-300 ${viewMode === 'grid' ? 'bg-white shadow-md' : 'hover:bg-slate-200'}`}
-                >
-                  <Grid3x3 className="w-5 h-5 text-slate-700" />
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg transition-all duration-300 ${viewMode === 'list' ? 'bg-white shadow-md' : 'hover:bg-slate-200'}`}
-                >
-                  <List className="w-5 h-5 text-slate-700" />
-                </button>
-                <button
-                  onClick={() => setViewMode('map')}
-                  className={`p-2 rounded-lg transition-all duration-300 ${viewMode === 'map' ? 'bg-white shadow-md' : 'hover:bg-slate-200'}`}
-                >
-                  <Navigation className="w-5 h-5 text-slate-700" />
-                </button>
-              </div>
-              <button
-                onClick={() => navigate('/free-listings')}
-                className="flex items-center gap-2 px-4 py-2 text-cyan-600 hover:text-cyan-700 font-semibold transition-colors"
-              >
-                View All Free Listings
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
 
           {/* Properties Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12">
