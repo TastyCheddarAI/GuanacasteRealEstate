@@ -63,14 +63,14 @@ const GuanacasteRealEstate = () => {
       // Transform properties data
       const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
       const transformedFeatured = propertiesData.properties.map((prop: any) => ({
-        id: prop.id,
-        title: prop.title,
-        location: `${prop.town}, Guanacaste`,
-        price: prop.price_numeric,
-        beds: prop.beds,
-        baths: prop.baths,
-        sqft: prop.area_m2,
-        lot: prop.lot_m2,
+        id: prop.id || `prop-${Math.random()}`,
+        title: prop.title || 'Property Title',
+        location: `${prop.town || 'Unknown'}, Guanacaste`,
+        price: prop.price_numeric || prop.price || 0,
+        beds: prop.beds || null,
+        baths: prop.baths || null,
+        sqft: prop.area_m2 || null,
+        lot: prop.lot_m2 || null,
         image: prop.media?.[0] ? `${SUPABASE_URL}/storage/v1/object/public/properties/${prop.media[0].storage_path}` : 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800',
         featured: prop.featured || false,
         verified: prop.verified || false,
@@ -219,7 +219,7 @@ const GuanacasteRealEstate = () => {
           {/* Price */}
           <div className="flex items-baseline justify-between mb-3">
             <div className="text-3xl font-bold text-slate-900">
-              ${property.price.toLocaleString()}
+              ${property.price ? property.price.toLocaleString() : 'Contact for Price'}
             </div>
             <div className="text-sm text-slate-500 font-medium">USD</div>
           </div>
