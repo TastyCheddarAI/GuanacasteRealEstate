@@ -135,17 +135,18 @@ export default function Layout() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden p-2 hover:bg-slate-100 rounded-lg transition-all duration-200"
+              className="md:hidden p-3 hover:bg-slate-100 rounded-lg transition-all duration-200 border border-slate-200 bg-white shadow-sm"
+              aria-label="Toggle mobile menu"
             >
-              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {menuOpen ? <X className="w-6 h-6 text-slate-700" /> : <Menu className="w-6 h-6 text-slate-700" />}
             </button>
           </div>
         </div>
 
         {/* Mobile Menu */}
         {menuOpen && (
-          <div className="lg:hidden bg-white border-t border-slate-200 shadow-xl">
-            <div className="px-4 py-6 space-y-4">
+          <div className="md:hidden bg-white border-t border-slate-200 shadow-xl z-40 relative">
+            <div className="px-4 py-6 space-y-4 max-h-screen overflow-y-auto">
               <button onClick={() => { navigate('/search'); setMenuOpen(false); }} className="block text-lg font-semibold text-slate-700 hover:text-cyan-600 transition-colors text-left">Buy</button>
               <button onClick={() => { navigate('/list'); setMenuOpen(false); }} className="block text-lg font-semibold text-slate-700 hover:text-cyan-600 transition-colors text-left">Sell</button>
               <button onClick={() => { navigate('/explore'); setMenuOpen(false); }} className="block text-lg font-semibold text-slate-700 hover:text-cyan-600 transition-colors text-left">Towns</button>
