@@ -385,7 +385,7 @@ const Tamarindo = () => {
                 {/* About Tamarindo */}
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
-                    <h3 className="text-2xl font-bold text-slate-900 mb-4">About Tamarindo</h3>
+                    <h3 className="text-2xl font-bold text-slate-900 mb-4 text-center">About Tamarindo</h3>
                     <p className="text-slate-700 leading-relaxed mb-4">
                       Tamarindo is the vibrant heart of Guanacaste's Gold Coast, renowned worldwide for its exceptional surfing waves and laid-back beach culture. What started as a small fishing village has evolved into Costa Rica's most popular beach destination, attracting surfers, digital nomads, and luxury travelers from around the globe.
                     </p>
@@ -394,7 +394,7 @@ const Tamarindo = () => {
                     </p>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-slate-900 mb-4">Why Tamarindo?</h3>
+                    <h3 className="text-2xl font-bold text-slate-900 mb-4 text-center">Why Tamarindo?</h3>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-3">
                         <Waves className="w-5 h-5 text-cyan-600 flex-shrink-0 mt-0.5" />
@@ -418,7 +418,7 @@ const Tamarindo = () => {
 
                 {/* Weather Widget */}
                 <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-200">
-                  <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                  <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2 text-center">
                     <Sun className="w-5 h-5 text-yellow-600" />
                     Current Weather & Forecast
                   </h3>
@@ -457,7 +457,7 @@ const Tamarindo = () => {
                 {/* Interactive Map */}
                 <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200">
                   <div className="p-4 border-b border-slate-200">
-                    <h3 className="text-xl font-semibold text-slate-900 flex items-center gap-2">
+                    <h3 className="text-xl font-semibold text-slate-900 flex items-center gap-2 text-center">
                       <Map className="w-5 h-5 text-cyan-600" />
                       Explore Tamarindo
                     </h3>
@@ -476,7 +476,7 @@ const Tamarindo = () => {
             {activeTab === 'properties' && (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold text-slate-900">Tamarindo Properties</h3>
+                  <h3 className="text-xl font-bold text-slate-900 text-center">Tamarindo Properties</h3>
                   <div className="flex gap-2">
                     {['all', 'house', 'condo', 'lot'].map(type => (
                       <button
@@ -512,7 +512,7 @@ const Tamarindo = () => {
               <div className="space-y-8">
                 {/* Beaches */}
                 <div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                  <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2 text-center">
                     <Waves className="w-6 h-6 text-cyan-600" />
                     Tamarindo Beaches
                   </h3>
@@ -529,7 +529,7 @@ const Tamarindo = () => {
 
                 {/* Restaurants */}
                 <div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                  <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2 text-center">
                     <Utensils className="w-6 h-6 text-orange-600" />
                     Dining Scene
                   </h3>
@@ -552,7 +552,7 @@ const Tamarindo = () => {
 
                 {/* Activities */}
                 <div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                  <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2 text-center">
                     <CameraIcon className="w-6 h-6 text-purple-600" />
                     Activities & Adventures
                   </h3>
@@ -579,7 +579,7 @@ const Tamarindo = () => {
               <div className="space-y-8">
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
-                    <h3 className="text-2xl font-bold text-slate-900 mb-6">Market Overview</h3>
+                    <h3 className="text-2xl font-bold text-slate-900 mb-6 text-center">Market Overview</h3>
                     <div className="space-y-4">
                       <div className="flex justify-between items-center p-4 bg-slate-50 rounded-lg">
                         <span className="text-slate-700">Average Property Price</span>
@@ -601,7 +601,7 @@ const Tamarindo = () => {
                   </div>
 
                   <div>
-                    <h3 className="text-2xl font-bold text-slate-900 mb-6">Cost of Living</h3>
+                    <h3 className="text-2xl font-bold text-slate-900 mb-6 text-center">Cost of Living</h3>
                     <div className="space-y-4">
                       {Object.entries(costOfLiving).map(([category, data]) => (
                         <div key={category} className="p-4 bg-slate-50 rounded-lg">
@@ -617,7 +617,7 @@ const Tamarindo = () => {
                 </div>
 
                 <div className="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-200">
-                  <h3 className="text-xl font-bold text-slate-900 mb-4">Investment Potential</h3>
+                  <h3 className="text-xl font-bold text-slate-900 mb-4 text-center">Investment Potential</h3>
                   <div className="grid md:grid-cols-3 gap-6">
                     <div className="text-center">
                       <Award className="w-8 h-8 text-cyan-600 mx-auto mb-2" />

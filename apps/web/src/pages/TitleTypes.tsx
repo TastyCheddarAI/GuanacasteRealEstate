@@ -155,7 +155,7 @@ const TitleTypes = () => {
       <section className="py-20 bg-slate-50">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-slate-900 mb-4">Title Types in Costa Rica</h2>
+            <h2 className="text-4xl font-bold text-slate-900 mb-4 text-center">Title Types in Costa Rica</h2>
             <p className="text-xl text-slate-600">Two main property ownership structures with different rights and restrictions</p>
           </div>
 
@@ -213,7 +213,7 @@ const TitleTypes = () => {
       <section className="py-16 bg-white">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">Detailed Comparison</h2>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4 text-center">Detailed Comparison</h2>
             <p className="text-slate-600">Compare titled properties vs maritime concessions across different aspects</p>
           </div>
 
@@ -274,7 +274,7 @@ const TitleTypes = () => {
       <section className="py-16 bg-gradient-to-br from-slate-50 to-cyan-50/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">Which Type is Right for You?</h2>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4 text-center">Which Type is Right for You?</h2>
             <p className="text-slate-600">Consider your priorities and investment goals</p>
           </div>
 
@@ -339,7 +339,7 @@ const TitleTypes = () => {
             <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <Sparkles className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">Need Help Choosing?</h2>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4 text-center">Need Help Choosing?</h2>
             <p className="text-slate-600 mb-8 max-w-2xl mx-auto">
               Our AI Property Assistant can help you understand which property type best fits
               your specific situation, budget, and investment goals.

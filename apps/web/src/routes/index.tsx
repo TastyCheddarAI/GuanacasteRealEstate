@@ -450,9 +450,39 @@ const GuanacasteRealEstate = () => {
           {/* Section Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-slate-900 mb-2">Featured Properties</h2>
+              <h2 className="text-3xl font-bold text-slate-900 mb-2 text-center">Featured Properties</h2>
               <p className="text-slate-600">Hand-picked luxury homes and prime development opportunities</p>
             </div>
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-2 bg-slate-100 rounded-xl p-1">
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`p-2 rounded-lg transition-all duration-300 ${viewMode === 'grid' ? 'bg-white shadow-md' : 'hover:bg-slate-200'}`}
+                >
+                  <Grid3x3 className="w-5 h-5 text-slate-700" />
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 rounded-lg transition-all duration-300 ${viewMode === 'list' ? 'bg-white shadow-md' : 'hover:bg-slate-200'}`}
+                >
+                  <List className="w-5 h-5 text-slate-700" />
+                </button>
+                <button
+                  onClick={() => setViewMode('map')}
+                  className={`p-2 rounded-lg transition-all duration-300 ${viewMode === 'map' ? 'bg-white shadow-md' : 'hover:bg-slate-200'}`}
+                >
+                  <Navigation className="w-5 h-5 text-slate-700" />
+                </button>
+              </div>
+              <button
+                onClick={() => navigate('/free-listings')}
+                className="flex items-center gap-2 px-4 py-2 text-cyan-600 hover:text-cyan-700 font-semibold transition-colors"
+              >
+                View All Free Listings
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
             <div className="flex items-center gap-3">
               <div className="hidden sm:flex items-center gap-2 bg-slate-100 rounded-xl p-1">
                 <button
@@ -567,7 +597,7 @@ const GuanacasteRealEstate = () => {
                 <Sparkles className="w-4 h-4" />
                 <span className="text-sm font-bold">Powered by AI</span>
               </div>
-              <h2 className="text-5xl font-bold text-slate-900 mb-6 leading-tight">
+              <h2 className="text-5xl font-bold text-slate-900 mb-6 leading-tight text-center">
                 Your Personal <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">AI Real Estate Concierge</span>
               </h2>
               <p className="text-xl text-slate-600 mb-8 leading-relaxed">

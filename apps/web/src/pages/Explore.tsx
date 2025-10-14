@@ -5,7 +5,7 @@ export default function Explore() {
     <div className="container mx-auto py-8">
       <Card>
         <CardHeader>
-          <CardTitle>Explore Page</CardTitle>
+          <CardTitle className="text-center">Explore Page</CardTitle>
         </CardHeader>
         <CardContent>
           <p>Explore properties in Guanacaste</p>

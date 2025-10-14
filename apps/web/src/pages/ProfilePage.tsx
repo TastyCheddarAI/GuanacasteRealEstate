@@ -85,7 +85,7 @@ export default function ProfilePage() {
     <div className="container mx-auto py-8 max-w-md">
       <Card>
         <CardHeader>
-          <CardTitle>Profile</CardTitle>
+          <CardTitle className="text-center">Profile</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
